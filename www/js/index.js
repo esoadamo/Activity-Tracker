@@ -12,6 +12,7 @@ const config = {
     switch (app_mode) {
       case app_mode_webpage: // webpage? save data into cookies
         document.cookie = strf("time_tracker_app=%s; expires=Fri, 22 Feb 2222 22:22:22 UTC", encodeURI(JSON.stringify(config)));
+        console.log('Saved');
         break;
     }
   },
@@ -30,7 +31,7 @@ const config = {
         } else for (var i = 0; i < cookies.length; i++){
           let key_value_pair = cookies[i].split('=');
           if (key_value_pair[0] == 'time_tracker_app') {
-            saved_datay = JSON.parse(decodeURI(key_value_pair[1]));
+            saved_data = JSON.parse(decodeURI(key_value_pair[1]));
             break;
           }
         }
@@ -92,6 +93,8 @@ const app = {
   onDeviceReady: function() {
     this.receivedEvent('deviceready');
     config.load();
+
+    // Button for creating new events shows a dialog asking about what was the user doing in the time paste
     btnAddEvents.addEventListener('click', () => {
       let dialogAdd = document.getElementById ('dialogAdd');
       let dialogWindow = document.getElementById('dialogWindow');
@@ -101,6 +104,9 @@ const app = {
       }
 
       let p_question = document.createElement('p');
+
+      if (config['saved_data']['lastModified'] == undefined) // if user is creating event for the first time, ask him about the last period
+        config['saved_data']['lastModified'] = new Date(Date.now() - (config['period'] * 60 * 1000));
       let timeBegin = new Date(config['saved_data']['lastModified']);
       let timeEnd = new Date(timeBegin.getTime() + (config['period'] * 60 * 1000));
 
@@ -122,7 +128,7 @@ const app = {
 
       for (let category of Object.keys(config['categories'])) {
         let btn = document.createElement('p');
-        let dateStr = timeBegin.getFullYear() + '-' + (timeBegin.getMonth()) + '-' + timeBegin.getDate();
+        let dateStr = timeBegin.getFullYear() + '-' + (timeBegin.getMonth() + 1) + '-' + timeBegin.getDate();
         btn.dataset.lastEdit = true;
         btn.className = "dialogBtn";
         btn.innerHTML = category;
