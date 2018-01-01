@@ -1,8 +1,8 @@
 {
   "name": "timetracker",
-  "displayName": "Time Tracker",
+  "displayName": "Activity Tracker",
   "version": "0.1.0",
-  "description": "Time tracking app",
+  "description": "Keep data of what you were doing at certain point in time",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
