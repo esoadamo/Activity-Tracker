@@ -295,6 +295,4 @@ function generateTable(year, month) {
   ctx.stroke();
 }
 
-// window.onload = app.onDeviceReady();
-// app.initialize();
-app.onDeviceReady();
+app.initialize();
