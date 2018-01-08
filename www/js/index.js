@@ -1,3 +1,5 @@
+const FILE_DATA = "data.json"; // file with all data
+
 let saved_data = {
   'period': 30, // how long does one period lasts in minutes
   'categories': {},
@@ -64,7 +66,8 @@ const app = {
           let overlayText = document.createElement('div');
           overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(timeStart + saved_data['period'])}">?`;
           overlay.appendChild(overlayText);
-          function createCategoryButton(category){
+
+          function createCategoryButton(category) {
             let categoryBtn = document.createElement('button');
             categoryBtn.className = 'button';
             categoryBtn.style.background = saved_data['categories'][category];
@@ -105,13 +108,13 @@ const app = {
             btnOk.className = 'button';
             btnOk.innerHTML = 'save';
             btnOk.style.background = '#2b5e42';
-            btnOk.addEventListener('click', ()=>{
+            btnOk.addEventListener('click', () => {
               let newCategory = document.querySelector('#catName').value;
-              if (newCategory.trim().length == 0){
+              if (newCategory.trim().length == 0) {
                 alert('Category name should not be empty');
                 return;
               }
-              if (newCategory in saved_data['categories']){
+              if (newCategory in saved_data['categories']) {
                 alert('This category already exists');
                 return;
               }
@@ -124,7 +127,9 @@ const app = {
             btnCancel.className = 'button';
             btnCancel.innerHTML = 'cancel';
             btnCancel.style.background = '#ff4900';
-            btnCancel.addEventListener('click', ()=>{overoverlay.parentNode.removeChild(overoverlay);});
+            btnCancel.addEventListener('click', () => {
+              overoverlay.parentNode.removeChild(overoverlay);
+            });
             overoverlay.appendChild(btnOk);
             overoverlay.appendChild(btnCancel);
           });
@@ -183,24 +188,30 @@ function strf() {
 }
 
 /**
- * save - saved current data to cookies
+ * save - saved current data to the data file
  *
  * @return {undefined}
  */
-function save(){
-  Cookie.set('timeTracker', JSON.stringify(saved_data), 355000);
+function save() {
+  FilesManipulator.open(FILE_DATA, (file) => {
+    file.write(JSON.stringify(saved_data));
+  });
 }
 
 /**
- * load - load saved state from cookies
+ * load - load saved state from the data file
  *
  * @return {undefined}
  */
-function load(){
-  let c = Cookie.get('timeTracker');
-  if (c.trim().length == 0)
-    return;
-  saved_data = JSON.parse(c);
+function load() {
+  FilesManipulator.open(FILE_DATA, (file) => {
+    file.read((d) => {
+      if (d.trim().length === 0)
+        return;
+      saved_data = JSON.parse(d);
+      paintToday();
+    });
+  });
 }
 
 

@@ -14,16 +14,28 @@ const FilesManipulator = {
    * @param  {function} onErrorCreateFile = FilesManipulator.void callback function
    * @return {undefined}
    */
-  open: function(name, onOpen, append = false, temporary = false, temporary_size = 5242880, onErrorLoadFs = FilesManipulator.void, onErrorCreateFile = FilesManipulator.void) {
-    window.requestFileSystem(temporary ? window.TEMPORARY : LocalFileSystem.PERSISTENT, temporary ? temporary_size : 0, function(fs) {
-      fs.root.getFile(name, {
-        create: true,
-        exclusive: false
-      }, function(fileEntry) {
-        let openedFile = new OpenedFile(fileEntry, append);
-        return onOpen(openedFile);
-      }, onErrorCreateFile);
-    }, )
+  open: function(name, onOpen, append = false, temporary = false, temporary_size = 5242880, overrideFs = false, onErrorLoadFs = FilesManipulator.void, onErrorCreateFile = FilesManipulator.void) {
+    function createFile(dirEntry) {
+      dirEntry.getFile(name, {
+          create: true,
+          exclusive: false
+        },
+        function(fileEntry) {
+          let openedFile = new OpenedFile(fileEntry, append);
+          return onOpen(openedFile);
+        }, onErrorCreateFile);
+    }
+
+    if (overrideFs !== false) { // TODO
+      alert('using ' + overrideFs)
+      window.resolveLocalFileSystemURL(overrideFs, function(dirEntry) {
+        createFile(dirEntry);
+      });
+    } else {
+      window.requestFileSystem(temporary ? window.TEMPORARY : LocalFileSystem.PERSISTENT, temporary ? temporary_size : 0, function(fs) {
+        createFile(fs.root);
+      });
+    }
   },
 
   /**
