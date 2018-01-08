@@ -23,10 +23,12 @@ body {
 .button {
   font-size: 30px;
   width: 100%;
+  min-height: 1.7em;
 }
 
 .overlay {
   font-family: sans-serif;
+  color: #FFFFFF;
   font-size: 30px;
   position: absolute;
   z-index: 1000;
@@ -39,6 +41,11 @@ body {
   height: 100vh;
   text-align: center;
   background: #123456;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+input[type="time"] {
+  font-size: 1em;
+  width: auto;
 }
