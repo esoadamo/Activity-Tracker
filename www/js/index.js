@@ -134,51 +134,6 @@ const app = {
   }
 };
 
-
-/**
- * Class for setting & getting cookies
- */
-const cookies = {
-
-  /**
-   * set - Sets cookie to some value
-   *
-   * @param  {type} cname  name of the cookie
-   * @param  {type} cvalue value of the cookie
-   * @param  {type} exdays in how many days will the cookies expire
-   * @return {undefined}
-   */
-  set : function(cname, cvalue, exdays) {
-      var d = new Date();
-      d.setTime(d.getTime() + (exdays*24*60*60*1000));
-      var expires = "expires="+ d.toUTCString();
-      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  },
-
-  /**
-   * get - Gets a cookie value
-   *
-   * @param  {type} cname name of the cookie
-   * @return {string}     cookie value if cookie with that name exists, empty string otherwise
-   */
-  get : function (cname) {
-      var name = cname + "=";
-      var decodedCookie = decodeURIComponent(document.cookie);
-      var ca = decodedCookie.split(';');
-      for(var i = 0; i <ca.length; i++) {
-          var c = ca[i];
-          while (c.charAt(0) == ' ') {
-              c = c.substring(1);
-          }
-          if (c.indexOf(name) == 0) {
-              return c.substring(name.length, c.length);
-          }
-      }
-      return "";
-  }
-}
-
-
 /**
  * stringToMinutes - converts HTML input's tag with type time value into number of minutes
  *
@@ -233,7 +188,7 @@ function strf() {
  * @return {undefined}
  */
 function save(){
-  cookies.set('timeTracker', JSON.stringify(saved_data), 355000);
+  Cookie.set('timeTracker', JSON.stringify(saved_data), 355000);
 }
 
 /**
@@ -242,7 +197,7 @@ function save(){
  * @return {undefined}
  */
 function load(){
-  let c = cookies.get('timeTracker');
+  let c = Cookie.get('timeTracker');
   if (c.trim().length == 0)
     return;
   saved_data = JSON.parse(c);
