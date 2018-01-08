@@ -39,4 +39,5 @@ source = Image.open('icon.png')
 for file, size in output_files.items():
     print('saving ', file)
     source.resize((size, size)).save(file, 'PNG')
+source.resize((64, 64)).save('www/favicon.png', 'ICO')
 print('done')
