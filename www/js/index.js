@@ -41,6 +41,10 @@ const app = {
         btnNewRecord.addEventListener('click', () => {
           Frames.new_record();
         });
+        let btnMoreOptions = document.querySelector('#btnMoreOptions');
+        btnMoreOptions.addEventListener('click', () => {
+          Frames.more_options();
+        });
         break;
     }
   }

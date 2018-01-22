@@ -22,7 +22,6 @@ body {
 
 .button {
   font-size: 30px;
-  flex-grow: 1;
   min-height: 1.7em;
   width: 100%;
 }
@@ -42,8 +41,14 @@ body {
   height: 100vh;
   text-align: center;
   background: #123456;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+}
+
+input[type="text"] {
+  font-size: 1.4em;
+  width: 100%;
+  text-align: center;
 }
 
 input[type="time"] {

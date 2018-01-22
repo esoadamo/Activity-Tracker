@@ -59,11 +59,33 @@ const Frames = {
     newCategoryBtn.addEventListener('click', () => {
       Frames.new_category(createCategoryButton);
     });
+  },
 
-    let btnMoreOptions = document.querySelector('#btnMoreOptions');
-    btnMoreOptions.addEventListener('click', () => {
+  /**
+   * more_options - shows extend settings frame
+   *
+   * @return {undefined}
+   */
+  more_options: function() {
+    let overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    document.body.appendChild(overlay);
+
+    let overlayBtns = [];
+    let btnSyncSetup = document.createElement('button');
+    btnSyncSetup.className = 'button';
+    btnSyncSetup.textContent = 'Setup sync';
+    btnSyncSetup.addEventListener('click', () => {
       Frames.sync_setup();
     });
+    overlayBtns.push(btnSyncSetup);
+
+    for (let btn of overlayBtns){
+    overlay.appendChild(btn);
+      btn.addEventListener('click', () => {
+        overlay.parentNode.removeChild(overlay);
+      });
+    }
   },
 
   /**
@@ -76,19 +98,26 @@ const Frames = {
     overlay.className = 'overlay';
     document.body.appendChild(overlay);
 
-    let overlayBtns = [];
-    let btnSyncSetup = document.createElement('button');
-    btnSyncSetup.className = 'button';
-    btnSyncSetup.textContent = 'Setup sync';
-    btnSyncSetup.addEventListener('click', () => {
-      // TODO Finish this
+    overlay.innerHTML = '<input type="text" id="onlineUsername" placeholder="online server url"></input>';
+    let txtUsername = document.querySelector('#onlineUsername');
+    if ('account' in saved_data)
+      txtUsername.value = saved_data['account'];
+    let btnSave = document.createElement('button');
+    btnSave.className = 'button';
+    btnSave.textContent = 'Save';
+    btnSave.addEventListener('click', ()=> {
+      saved_data['account'] = txtUsername.value;
+      save();
+      overlay.parentNode.removeChild(overlay);
     });
-    overlayBtns.push(btnExport);
 
-    for (let btn of overlayBtns)
-      btn.addEventListener('click', () => {
-        overlay.parentNode.removeChild(overlay);
-      });
+    let btnCancel = document.createElement('button');
+    btnCancel.className = 'button';
+    btnCancel.textContent = 'Cancel';
+    btnCancel.addEventListener('click', ()=> { overlay.parentNode.removeChild(overlay);});
+
+    overlay.appendChild(btnSave);
+    overlay.appendChild(btnCancel)
   },
 
 
