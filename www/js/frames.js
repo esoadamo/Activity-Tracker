@@ -1,0 +1,142 @@
+const Frames = {
+
+  /**
+   * new_record - shows frame for adding new record
+   *
+   * @return {type}  undefined
+   */
+  new_record: function(){
+    let today = new Date();
+    let overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    document.body.appendChild(overlay);
+
+    let year = today.getFullYear().toString();
+    let month = (today.getMonth() + 1).toString();
+    let day = today.getDate();
+    if (!(year in saved_data['events']))
+      saved_data['events'][year] = {};
+    if (!(month in saved_data['events'][year]))
+      saved_data['events'][year][month] = {};
+
+    let timeStart = 0;
+    if (!(day in saved_data['events'][year][month]))
+      saved_data['events'][year][month][day] = [];
+    else
+      for (let event of saved_data['events'][year][month][day])
+        if (event['e'] > timeStart)
+          timeStart = event['e'];
+
+    let overlayText = document.createElement('div');
+    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(timeStart + saved_data['period'])}">?`;
+    overlay.appendChild(overlayText);
+
+    function createCategoryButton(category) {
+      let categoryBtn = document.createElement('button');
+      categoryBtn.className = 'button';
+      categoryBtn.style.background = saved_data['categories'][category];
+      categoryBtn.innerHTML = category;
+      categoryBtn.addEventListener('click', () => {
+        let inputStart = document.querySelector('#inputStart');
+        let inputEnd = document.querySelector('#inputEnd');
+        saved_data['events'][year][month][day].push({
+          's': stringToMinutes(inputStart.value),
+          'e': stringToMinutes(inputEnd.value),
+          'c': category
+        });
+        overlay.parentNode.removeChild(overlay);
+        save();
+        paintToday();
+      });
+      overlay.appendChild(categoryBtn);
+    }
+    for (let category of Object.keys(saved_data['categories']))
+      createCategoryButton(category);
+    let newCategoryBtn = document.createElement('button');
+    newCategoryBtn.className = 'button';
+    newCategoryBtn.textContent = '+';
+    overlay.appendChild(newCategoryBtn);
+    newCategoryBtn.addEventListener('click', () => {
+      Frames.new_category(createCategoryButton);
+    });
+
+    let btnMoreOptions = document.querySelector('#btnMoreOptions');
+    btnMoreOptions.addEventListener('click', () => {
+      Frames.sync_setup();
+    });
+  },
+
+  /**
+   * sync_setup - shows frame for adjusting sync settings
+   *
+   * @return {undefined}
+   */
+  sync_setup: function() {
+    let overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    document.body.appendChild(overlay);
+
+    let overlayBtns = [];
+    let btnSyncSetup = document.createElement('button');
+    btnSyncSetup.className = 'button';
+    btnSyncSetup.textContent = 'Setup sync';
+    btnSyncSetup.addEventListener('click', () => {
+      // TODO Finish this
+    });
+    overlayBtns.push(btnExport);
+
+    for (let btn of overlayBtns)
+      btn.addEventListener('click', () => {
+        overlay.parentNode.removeChild(overlay);
+      });
+  },
+
+
+  /**
+   * new_category - shows frame for creating new category
+   *
+   * @param  {function} function_create_button this function is called when user confirms creating new category
+   * @return {undefined}
+   */
+  new_category: function(function_create_button){
+    /*
+    Show dialog for creatting new category
+    */
+    let overoverlay = document.createElement('div');
+    overoverlay.className = 'overlay';
+    overoverlay.style.zIndex = 1001;
+    document.body.appendChild(overoverlay);
+    overoverlay.innerHTML = `<div class="button" style="display:flex; flex-direction: row; height: 30vh;">
+          <input type="color" style="flex-grow: 1; height: 100%; min-width: 20%" id="catColor">
+          <input type="text" placeholder="Category name"  style="flex-grow: 3; height: 100%; font-size: 5vh;" id="catName">
+        </div>`;
+    let btnOk = document.createElement('button');
+    btnOk.className = 'button';
+    btnOk.innerHTML = 'save';
+    btnOk.style.background = '#2b5e42';
+    btnOk.addEventListener('click', () => {
+      let newCategory = document.querySelector('#catName').value;
+      if (newCategory.trim().length == 0) {
+        alert('Category name should not be empty');
+        return;
+      }
+      if (newCategory in saved_data['categories']) {
+        alert('This category already exists');
+        return;
+      }
+      saved_data['categories'][newCategory] = document.querySelector('#catColor').value;
+      function_create_button(newCategory);
+      overoverlay.parentNode.removeChild(overoverlay);
+      save();
+    });
+    let btnCancel = document.createElement('button');
+    btnCancel.className = 'button';
+    btnCancel.innerHTML = 'cancel';
+    btnCancel.style.background = '#ff4900';
+    btnCancel.addEventListener('click', () => {
+      overoverlay.parentNode.removeChild(overoverlay);
+    });
+    overoverlay.appendChild(btnOk);
+    overoverlay.appendChild(btnCancel);
+  }
+}

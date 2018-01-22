@@ -22,8 +22,9 @@ body {
 
 .button {
   font-size: 30px;
-  width: 100%;
+  flex-grow: 1;
   min-height: 1.7em;
+  width: 100%;
 }
 
 .overlay {
@@ -41,8 +42,8 @@ body {
   height: 100vh;
   text-align: center;
   background: #123456;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
 }
 
 input[type="time"] {
