@@ -107,6 +107,8 @@ function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
     file.write(JSON.stringify(saved_data));
   });
+  if (('account' in saved_data) && ('server' in saved_data))
+    Server.push();
 }
 
 /**

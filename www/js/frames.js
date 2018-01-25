@@ -98,15 +98,19 @@ const Frames = {
     overlay.className = 'overlay';
     document.body.appendChild(overlay);
 
-    overlay.innerHTML = '<input type="text" id="onlineUsername" placeholder="online server url"></input>';
+    overlay.innerHTML = '<input type="text" id="onlineURL" placeholder="online server url"></input><input type="text" id="onlineUsername" placeholder="account name"></input>';
     let txtUsername = document.querySelector('#onlineUsername');
+    let txtServer = document.querySelector('#onlineURL');
     if ('account' in saved_data)
       txtUsername.value = saved_data['account'];
+    if ('server' in saved_data)
+      txtServer.value = saved_data['server'];
     let btnSave = document.createElement('button');
     btnSave.className = 'button';
     btnSave.textContent = 'Save';
     btnSave.addEventListener('click', ()=> {
       saved_data['account'] = txtUsername.value;
+      saved_data['server'] = txtServer.value;
       save();
       overlay.parentNode.removeChild(overlay);
     });
