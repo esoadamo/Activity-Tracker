@@ -1,6 +1,6 @@
 const FILE_DATA = "data.json"; // file with all data
 
-let saved_data = {
+let online_data = {
   'period': 30, // how long does one period lasts in minutes
   'categories': {},
   'events': {}, // by default user does not have any data
@@ -105,9 +105,9 @@ function strf() {
  */
 function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
-    file.write(JSON.stringify(saved_data));
+    file.write(JSON.stringify(online_data));
   });
-  if (('account' in saved_data) && ('server' in saved_data))
+  if (('account' in online_data) && ('server' in online_data))
     Server.push();
 }
 
@@ -121,7 +121,7 @@ function load() {
     file.read((d) => {
       if (d.trim().length === 0)
         return;
-      saved_data = JSON.parse(d);
+      online_data = JSON.parse(d);
       paintToday();
     });
   });
@@ -160,9 +160,9 @@ function generateTable(year, month) {
     ctx.lineTo(canvas.width, upperPos + lineGap);
     ctx.stroke();
     // Paint all events of this day with their category color
-    if ((year in saved_data['events']) && (month in saved_data['events'][year]) && (day in saved_data['events'][year][month])) {
-      for (let event of saved_data['events'][year][month][day]) {
-        ctx.fillStyle = saved_data['categories'][event['c']];
+    if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
+      for (let event of online_data['events'][year][month][day]) {
+        ctx.fillStyle = online_data['categories'][event['c']];
         ctx.fillRect(textWidth + event['s'], upperPos - lineHeight, event['e'] - event['s'], lineHeight);
       }
     }

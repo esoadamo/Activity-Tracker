@@ -1,10 +1,10 @@
 const Server = {
-  user_data_url: function(user=saved_data['account']){
-    return `${saved_data['server']}/data/${user}`;
+  user_data_url: function(user=online_data['account']){
+    return `${online_data['server']}/data/${user}`;
   },
 
   push: function() {
-    let params = `data=${JSON.stringify(saved_data)}`;
+    let params = `data=${JSON.stringify(online_data)}`;
     let request = new XMLHttpRequest();
     request.open("POST", Server.user_data_url(), true);
     request.onreadystatechange = function (aEvt) {

@@ -14,32 +14,32 @@ const Frames = {
     let year = today.getFullYear().toString();
     let month = (today.getMonth() + 1).toString();
     let day = today.getDate();
-    if (!(year in saved_data['events']))
-      saved_data['events'][year] = {};
-    if (!(month in saved_data['events'][year]))
-      saved_data['events'][year][month] = {};
+    if (!(year in online_data['events']))
+      online_data['events'][year] = {};
+    if (!(month in online_data['events'][year]))
+      online_data['events'][year][month] = {};
 
     let timeStart = 0;
-    if (!(day in saved_data['events'][year][month]))
-      saved_data['events'][year][month][day] = [];
+    if (!(day in online_data['events'][year][month]))
+      online_data['events'][year][month][day] = [];
     else
-      for (let event of saved_data['events'][year][month][day])
+      for (let event of online_data['events'][year][month][day])
         if (event['e'] > timeStart)
           timeStart = event['e'];
 
     let overlayText = document.createElement('div');
-    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(timeStart + saved_data['period'])}">?`;
+    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(timeStart + online_data['period'])}">?`;
     overlay.appendChild(overlayText);
 
     function createCategoryButton(category) {
       let categoryBtn = document.createElement('button');
       categoryBtn.className = 'button';
-      categoryBtn.style.background = saved_data['categories'][category];
+      categoryBtn.style.background = online_data['categories'][category];
       categoryBtn.innerHTML = category;
       categoryBtn.addEventListener('click', () => {
         let inputStart = document.querySelector('#inputStart');
         let inputEnd = document.querySelector('#inputEnd');
-        saved_data['events'][year][month][day].push({
+        online_data['events'][year][month][day].push({
           's': stringToMinutes(inputStart.value),
           'e': stringToMinutes(inputEnd.value),
           'c': category
@@ -50,7 +50,7 @@ const Frames = {
       });
       overlay.appendChild(categoryBtn);
     }
-    for (let category of Object.keys(saved_data['categories']))
+    for (let category of Object.keys(online_data['categories']))
       createCategoryButton(category);
     let newCategoryBtn = document.createElement('button');
     newCategoryBtn.className = 'button';
@@ -101,16 +101,16 @@ const Frames = {
     overlay.innerHTML = '<input type="text" id="onlineURL" placeholder="online server url"></input><input type="text" id="onlineUsername" placeholder="account name"></input>';
     let txtUsername = document.querySelector('#onlineUsername');
     let txtServer = document.querySelector('#onlineURL');
-    if ('account' in saved_data)
-      txtUsername.value = saved_data['account'];
-    if ('server' in saved_data)
-      txtServer.value = saved_data['server'];
+    if ('account' in online_data)
+      txtUsername.value = online_data['account'];
+    if ('server' in online_data)
+      txtServer.value = online_data['server'];
     let btnSave = document.createElement('button');
     btnSave.className = 'button';
     btnSave.textContent = 'Save';
     btnSave.addEventListener('click', ()=> {
-      saved_data['account'] = txtUsername.value;
-      saved_data['server'] = txtServer.value;
+      online_data['account'] = txtUsername.value;
+      online_data['server'] = txtServer.value;
       save();
       overlay.parentNode.removeChild(overlay);
     });
@@ -153,11 +153,11 @@ const Frames = {
         alert('Category name should not be empty');
         return;
       }
-      if (newCategory in saved_data['categories']) {
+      if (newCategory in online_data['categories']) {
         alert('This category already exists');
         return;
       }
-      saved_data['categories'][newCategory] = document.querySelector('#catColor').value;
+      online_data['categories'][newCategory] = document.querySelector('#catColor').value;
       function_create_button(newCategory);
       overoverlay.parentNode.removeChild(overoverlay);
       save();
