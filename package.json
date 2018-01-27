@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adam Hlaváček",
-  "license": "MIT License",
+  "license": "MIT",
   "dependencies": {
     "cordova-android": "^6.3.0",
     "cordova-browser": "^5.0.3",
