@@ -102,9 +102,9 @@ const Frames = {
     let txtUsername = document.querySelector('#onlineUsername');
     let txtServer = document.querySelector('#onlineURL');
     if ('account' in online_data)
-      txtUsername.value = online_data['account'];
+      txtUsername.value = offline_data['account'];
     if ('server' in online_data)
-      txtServer.value = online_data['server'];
+      txtServer.value = offline_data['server'];
     let btnSave = document.createElement('button');
     btnSave.className = 'button';
     btnSave.textContent = 'Save';

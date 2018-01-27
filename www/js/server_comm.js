@@ -1,6 +1,6 @@
 const Server = {
-  user_data_url: function(user=online_data['account']){
-    return `${online_data['server']}/data/${user}`;
+  user_data_url: function(user=offline_data['account']){
+    return `${offline_data['server']}/data/${user}`;
   },
 
   push: function() {

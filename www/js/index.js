@@ -6,6 +6,11 @@ let online_data = {
   'events': {}, // by default user does not have any data
 }
 
+let offline_data = {
+  'account': '',
+  'server': ''
+}
+
 /**
  * paintToday - repaints the canvas with current date (year and month)
  *
@@ -105,9 +110,10 @@ function strf() {
  */
 function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
-    file.write(JSON.stringify(online_data));
+    big_dict = {'online': online_data, 'offline': offline_data};
+    file.write(JSON.stringify(big_dict));
   });
-  if (('account' in online_data) && ('server' in online_data))
+  if (('account' in offline_data) && ('server' in offline_data) && (offline_data['server'].length > 0))
     Server.push();
 }
 
@@ -121,7 +127,9 @@ function load() {
     file.read((d) => {
       if (d.trim().length === 0)
         return;
-      online_data = JSON.parse(d);
+      big_dict = JSON.parse(d);
+      online_data = big_dict['online'];
+      offline_data = big_dict['offline'];
       paintToday();
     });
   });
