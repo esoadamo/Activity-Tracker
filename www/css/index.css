@@ -1,29 +1,146 @@
-body, html {
-  width: 100%;
-  height: 100%;
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(font/MaterialIcons-Regular.woff2) format('woff2'), url(font/MaterialIcons-Regular.woff) format('woff'), url(font/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+#overCanvas {
+  overflow: hidden;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  height: 30vh;
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  align-items: center;
+}
+
+.paintedDay {
+  background: rgba(101,101,101,0.2);
+  width: 35px;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: dayFlowsIn 1s;
+}
+
+@keyframes dayFlowsIn {
+  0% {
+    margin-top: 100%;
+  }
+  100% {
+    margin-top: 0%;
+  }
+}
+
+#dayTasks{
+  display: flex;
+  flex-direction: column;
+  font-size: 25px;
+}
+
+.dayTask {
+  background: #698ba7;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border: 2px solid #03233d;
+  margin-bottom: 10px;
+  color: #FFFFFF;
+  text-align: center;
+}
+
+.dayTask span {
+    flex-grow: 1;
+}
+
+.eventColor{
+  height: 1em;
+}
+
+#shownDate{
+  font-size: 35px;
+  height: 1.5em;
+  text-align: center;
+  background: rgba(0,0,0,0);
+  border: none;
+  color: #fff400;
 }
 
 body {
   display: flex;
   flex-direction: column;
-}
-
-#timeCanvas {
-  width: 100vw;
-  height: 80vh;
+  background: #063e6d;
 }
 
 #buttons {
+  position: fixed;
+  bottom: 5px;
+  right: 10px;
   display: flex;
   flex-direction: row;
   width: 100%;
-  flex-grow: 1;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+button {
+  width: 100%;
+  font-size: 40px;
+  min-height: 1.7em;
 }
 
 .button {
-  font-size: 30px;
-  min-height: 1.7em;
-  width: 100%;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.button:hover {
+  filter: brightness(1.5);
+}
+
+.button:active {
+  filter: brightness(0.7);
+}
+
+#btnNewRecord {
+  font-size: 100px;
+  color: #dc143c;
+}
+
+#btnMoreOptions {
+  font-size: 60px;
+  color: #3e5c61;
 }
 
 .overlay {
@@ -37,7 +154,7 @@ body {
   display: flex;
   visibility: visible;
   flex-direction: column;
-  width: 100vw;
+  min-width: 100vw;
   height: 100vh;
   text-align: center;
   background: #123456;

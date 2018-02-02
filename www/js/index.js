@@ -9,6 +9,7 @@ let online_data = {
 let offline_data = {
   'account': '',
   'server': '',
+  'daysToShow': 9,
   'server_data': {}
 }
 
@@ -19,7 +20,7 @@ let offline_data = {
  */
 function paintToday() {
   let today = new Date();
-  generateTable(today.getFullYear(), today.getMonth() + 1);
+  generateTable(today.getFullYear(), today.getMonth() + 1, today.getDate(), offline_data['daysToShow']);
 }
 
 const app = {
@@ -43,13 +44,18 @@ const app = {
       case 'deviceready':
         load();
         paintToday();
-        let btnNewRecord = document.querySelector('#newRecord');
+        let btnNewRecord = document.querySelector('#btnNewRecord');
         btnNewRecord.addEventListener('click', () => {
           Frames.new_record();
         });
         let btnMoreOptions = document.querySelector('#btnMoreOptions');
         btnMoreOptions.addEventListener('click', () => {
           Frames.more_options();
+        });
+        let shownDate = document.querySelector('#shownDate');
+        shownDate.addEventListener('change', () => {
+          let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
+          generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), daysToShow);
         });
         break;
     }
@@ -111,7 +117,10 @@ function strf() {
  */
 function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
-    big_dict = {'online': online_data, 'offline': offline_data};
+    big_dict = {
+      'online': online_data,
+      'offline': offline_data
+    };
     file.write(JSON.stringify(big_dict));
   });
   if (('account' in offline_data) && ('server' in offline_data) && (offline_data['server'].length > 0))
@@ -140,15 +149,96 @@ function load() {
   });
 }
 
-
 /**
  * generateTable - repaints the table canvas to show selected year and month
  *
  * @param  {number} year  year to show (0-2012)
  * @param  {number} month month to show (1-12)
+ * @param  {day} month day to show in center (1-12)
  * @return {undefined}
  */
-function generateTable(year, month) {
+function generateTable(year, month, day, daysToShow = null) {
+
+  /*
+  generate upper columns with data
+  */
+  if (daysToShow === null) {
+    if (!('daysToShow' in offline_data))
+      offline_data['daysToShow'] = 31;
+    daysToShow = offline_data['daysToShow'];
+  }
+
+  if (daysToShow !== offline_data['daysToShow']) {
+    offline_data['daysToShow'] = daysToShow;
+    save();
+  }
+  let container = document.querySelector('#overCanvas');
+  container.innerHTML = '';
+  const centerDate = new Date(year, month - 1, day);
+  const minutesInDay = 24 * 60;
+  for (let i = 0; i < daysToShow; i++) {
+    let dayDate = new Date(centerDate.getTime() - ((Math.floor(daysToShow / 2) - i) * 24 * 3600 * 1000));
+    let dayDOM = document.createElement('span');
+    dayDOM.className = 'paintedDay';
+
+    if (Math.abs(dayDate.getTime() - centerDate.getTime()) < 18000) {
+      dayDOM.style.filter = 'brightness(1.5)';
+    }
+
+    let year = dayDate.getFullYear();
+    let month = dayDate.getMonth() + 1;
+    let day = dayDate.getDate();
+    if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
+      let subDay = document.createElement('div');
+      subDay.style.width = '100%';
+      subDay.style.height = '100%';
+      subDay.style.position = 'relative';
+      for (let event of online_data['events'][year][month][day]) {
+        let dayPart = document.createElement('div');
+        dayPart.style.background = online_data['categories'][event['c']];
+        dayPart.style.width = '100%';
+        dayPart.style.position = 'absolute';
+
+        let percentageTaken = (event['e'] - event['s']) * 100 / minutesInDay; // how many % of day
+        let percentageStart = event['s'] * 100 / minutesInDay;
+
+        dayPart.style.top = `${100 - percentageStart - percentageTaken}%`;
+        dayPart.style.height = `${percentageTaken}%`;
+
+        subDay.appendChild(dayPart);
+      }
+      dayDOM.appendChild(subDay);
+    }
+
+    // On column click, show that date
+    dayDOM.addEventListener('click', () => {
+      generateTable(year, month, day, daysToShow);
+    });
+
+    container.appendChild(dayDOM);
+  }
+
+  // Change shown date value
+  let shownDate = document.querySelector('#shownDate');
+  shownDate.value = `${formatNumber(year, 4)}-${formatNumber(month, 2)}-${formatNumber(day, 2)}`;
+
+  // Show detail day's data
+  let dayTasks = document.querySelector('#dayTasks');
+  dayTasks.innerHTML = '';
+  if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month]))
+    for (let event of online_data['events'][year][month][day])
+      dayTasks.innerHTML += `<div class='dayTask'><input type='time' value="${minutesToString(event['s'])}"><span style='background: ${online_data['categories'][event['c']]};' class='eventColor'></span><input type='time' value="${minutesToString(event['e'])}"></span><span>${[event['c']]}</span></div>`;
+}
+
+
+/**
+ * generateExportTable - repaints the table canvas to show selected year and month
+ *
+ * @param  {number} year  year to show (0-2012)
+ * @param  {number} month month to show (1-12)
+ * @return {undefined}
+ */
+function generateExportTable(year, month) {
   let daysInMonth = new Date(year, month, 0).getDate();
   let canvas = document.querySelector('#timeCanvas');
   let lineHeight = 35;
