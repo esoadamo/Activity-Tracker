@@ -55,7 +55,7 @@ const app = {
         let shownDate = document.querySelector('#shownDate');
         shownDate.addEventListener('change', () => {
           let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
-          generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), daysToShow);
+          generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
         });
         break;
     }
