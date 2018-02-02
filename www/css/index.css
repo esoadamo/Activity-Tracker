@@ -112,6 +112,7 @@ body {
 button {
   width: 100%;
   font-size: 40px;
+  min-height: 1.7em;
 }
 
 .button {
@@ -153,7 +154,7 @@ button {
   display: flex;
   visibility: visible;
   flex-direction: column;
-  width: 100vw;
+  min-width: 100vw;
   height: 100vh;
   text-align: center;
   background: #123456;

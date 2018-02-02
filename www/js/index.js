@@ -53,7 +53,7 @@ const app = {
           Frames.more_options();
         });
         let shownDate = document.querySelector('#shownDate');
-        shownDate.addEventListener('change', ()=>{
+        shownDate.addEventListener('change', () => {
           let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
           generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), daysToShow);
         });
@@ -117,7 +117,10 @@ function strf() {
  */
 function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
-    big_dict = {'online': online_data, 'offline': offline_data};
+    big_dict = {
+      'online': online_data,
+      'offline': offline_data
+    };
     file.write(JSON.stringify(big_dict));
   });
   if (('account' in offline_data) && ('server' in offline_data) && (offline_data['server'].length > 0))
@@ -132,7 +135,6 @@ function save() {
 function load() {
   FilesManipulator.open(FILE_DATA, (file) => {
     file.read((d) => {
-      alert(d);
       if (d.trim().length === 0)
         return;
       big_dict = JSON.parse(d);
@@ -144,7 +146,7 @@ function load() {
         online_data = big_dict; // Old version compatibility
       paintToday();
     });
-  }, onErrorLoadFs=()=>{alert('Cannot load file system');}, onErrorCreateFile=()=>{alert('Cannot create save file');});
+  });
 }
 
 /**
@@ -155,18 +157,18 @@ function load() {
  * @param  {day} month day to show in center (1-12)
  * @return {undefined}
  */
-function generateTable(year, month, day, daysToShow=null) {
+function generateTable(year, month, day, daysToShow = null) {
 
   /*
   generate upper columns with data
   */
-  if (daysToShow === null){
+  if (daysToShow === null) {
     if (!('daysToShow' in offline_data))
       offline_data['daysToShow'] = 31;
     daysToShow = offline_data['daysToShow'];
   }
 
-  if (daysToShow !== offline_data['daysToShow']){
+  if (daysToShow !== offline_data['daysToShow']) {
     offline_data['daysToShow'] = daysToShow;
     save();
   }
@@ -179,7 +181,7 @@ function generateTable(year, month, day, daysToShow=null) {
     let dayDOM = document.createElement('span');
     dayDOM.className = 'paintedDay';
 
-    if (Math.abs(dayDate.getTime() - centerDate.getTime()) < 18000){
+    if (Math.abs(dayDate.getTime() - centerDate.getTime()) < 18000) {
       dayDOM.style.filter = 'brightness(1.5)';
     }
 
@@ -209,7 +211,7 @@ function generateTable(year, month, day, daysToShow=null) {
     }
 
     // On column click, show that date
-    dayDOM.addEventListener('click', ()=>{
+    dayDOM.addEventListener('click', () => {
       generateTable(year, month, day, daysToShow);
     });
 
