@@ -6,14 +6,17 @@ const Frames = {
    * @return {type}  undefined
    */
   new_record: function() {
-    let today = new Date();
     let overlay = document.createElement('div');
     overlay.className = 'overlay';
     document.body.appendChild(overlay);
 
-    let year = today.getFullYear().toString();
-    let month = (today.getMonth() + 1).toString();
-    let day = today.getDate();
+    let dateData = document.querySelector('#shownDate').value.split('-'); // yyyy-mm-dd format
+    for (let i = 0; i < dateData.length; i++)
+      dateData[i] = parseInt(dateData[i]).toString();
+
+    let year = dateData[0];
+    let month = dateData[1];
+    let day = dateData[2];
     if (!(year in online_data['events']))
       online_data['events'][year] = {};
     if (!(month in online_data['events'][year]))
