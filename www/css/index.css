@@ -1,29 +1,87 @@
-body, html {
-  width: 100%;
-  height: 100%;
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url(font/MaterialIcons-Regular.woff2) format('woff2'), url(font/MaterialIcons-Regular.woff) format('woff'), url(font/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+#overCanvas {
+  overflow: hidden;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
 }
 
 body {
   display: flex;
   flex-direction: column;
+  background: #063e6d;
 }
 
 #timeCanvas {
   width: 100vw;
-  height: 80vh;
+  height: 30vh;
 }
 
 #buttons {
+  position: absolute;
+  bottom: 5px;
+  right: 10px;
   display: flex;
   flex-direction: row;
   width: 100%;
-  flex-grow: 1;
+  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .button {
-  font-size: 30px;
-  min-height: 1.7em;
-  width: 100%;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.button:hover {
+  filter: brightness(1.5);
+}
+
+.button:active {
+  filter: brightness(0.7);
+}
+
+#btnNewRecord {
+  font-size: 100px;
+  color: #dc143c;
+}
+
+#btnMoreOptions {
+  font-size: 60px;
+  color: #3e5c61;
 }
 
 .overlay {

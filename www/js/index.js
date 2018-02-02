@@ -43,7 +43,7 @@ const app = {
       case 'deviceready':
         load();
         paintToday();
-        let btnNewRecord = document.querySelector('#newRecord');
+        let btnNewRecord = document.querySelector('#btnNewRecord');
         btnNewRecord.addEventListener('click', () => {
           Frames.new_record();
         });
@@ -140,7 +140,6 @@ function load() {
   });
 }
 
-
 /**
  * generateTable - repaints the table canvas to show selected year and month
  *
@@ -149,6 +148,53 @@ function load() {
  * @return {undefined}
  */
 function generateTable(year, month) {
+  let daysInMonth = new Date(year, month, 0).getDate();
+  let canvas = document.querySelector('#timeCanvas');
+  let lineHeight = 35;
+  let fontHeight = 30;
+  canvas.height = lineHeight * daysInMonth;
+  let lineGap = Math.abs(lineHeight - fontHeight) / 2;
+  let ctx = canvas.getContext("2d");
+  ctx.font = `${fontHeight}px monotype`
+  let textWidth = ctx.measureText('01').width;
+  canvas.width = textWidth + (24 * 60);
+  // Paint background
+  ctx.fillStyle = "rgba(0, 0, 0, 0)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "#000000";
+  for (let day = 1; day <= daysInMonth; day++) {
+    let upperPos = lineHeight * day;
+    // Paint day number
+    ctx.fillText(formatNumber(day, 2), 0, upperPos);
+    // Paint lower line
+    ctx.beginPath();
+    ctx.moveTo(0, upperPos + lineGap);
+    ctx.lineTo(canvas.width, upperPos + lineGap);
+    ctx.stroke();
+    // Paint all events of this day with their category color
+    if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
+      for (let event of online_data['events'][year][month][day]) {
+        ctx.fillStyle = online_data['categories'][event['c']];
+        ctx.fillRect(textWidth + event['s'], upperPos - lineHeight, event['e'] - event['s'], lineHeight);
+      }
+    }
+  }
+  // Paint the line separating date from events
+  ctx.beginPath();
+  ctx.moveTo(textWidth, 0);
+  ctx.lineTo(textWidth, canvas.height);
+  ctx.stroke();
+}
+
+
+/**
+ * generateExportTable - repaints the table canvas to show selected year and month
+ *
+ * @param  {number} year  year to show (0-2012)
+ * @param  {number} month month to show (1-12)
+ * @return {undefined}
+ */
+function generateExportTable(year, month) {
   let daysInMonth = new Date(year, month, 0).getDate();
   let canvas = document.querySelector('#timeCanvas');
   let lineHeight = 35;
@@ -188,3 +234,4 @@ function generateTable(year, month) {
 }
 
 app.initialize();
+paintToday();
