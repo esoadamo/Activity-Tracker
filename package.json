@@ -1,7 +1,7 @@
 {
   "name": "timetracker",
   "displayName": "Activity Tracker",
-  "version": "0.1.0",
+  "version": "0.9.9",
   "description": "Keep data of what you were doing at certain point in time",
   "main": "index.js",
   "scripts": {
