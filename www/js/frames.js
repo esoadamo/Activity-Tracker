@@ -5,7 +5,7 @@ const Frames = {
    *
    * @return {type}  undefined
    */
-  new_record: function(){
+  new_record: function() {
     let today = new Date();
     let overlay = document.createElement('div');
     overlay.className = 'overlay';
@@ -39,15 +39,23 @@ const Frames = {
       categoryBtn.addEventListener('click', () => {
         let inputStart = document.querySelector('#inputStart');
         let inputEnd = document.querySelector('#inputEnd');
-        online_data['events'][year][month][day].push({
+        let newEvent = {
           's': stringToMinutes(inputStart.value),
           'e': stringToMinutes(inputEnd.value),
           'c': category
-        });
+        };
+        let undoTimeout = 7;
+        let undoCopy = online_data['events'][year][month][day].slice();
+        Frames.btnUndoShow(() => {
+          online_data['events'][year][month][day] = undoCopy;
+          save();
+          generateTable(year, month, day);
+        }, undoTimeout);
+        online_data['events'][year][month][day].push(newEvent);
         compressDay(year, month, day);
         overlay.parentNode.removeChild(overlay);
         save();
-        paintToday();
+        generateTable(year, month, day);
       });
       overlay.appendChild(categoryBtn);
     }
@@ -92,8 +100,8 @@ const Frames = {
     });
     overlayBtns.push(btnCompressData);
 
-    for (let btn of overlayBtns){
-    overlay.appendChild(btn);
+    for (let btn of overlayBtns) {
+      overlay.appendChild(btn);
       btn.addEventListener('click', () => {
         overlay.parentNode.removeChild(overlay);
       });
@@ -120,7 +128,7 @@ const Frames = {
     let btnSave = document.createElement('button');
     btnSave.className = 'button';
     btnSave.textContent = 'Save';
-    btnSave.addEventListener('click', ()=> {
+    btnSave.addEventListener('click', () => {
       offline_data['account'] = txtUsername.value;
       offline_data['server'] = txtServer.value;
       save();
@@ -130,7 +138,9 @@ const Frames = {
     let btnCancel = document.createElement('button');
     btnCancel.className = 'button';
     btnCancel.textContent = 'Cancel';
-    btnCancel.addEventListener('click', ()=> { overlay.parentNode.removeChild(overlay);});
+    btnCancel.addEventListener('click', () => {
+      overlay.parentNode.removeChild(overlay);
+    });
 
     overlay.appendChild(btnSave);
     overlay.appendChild(btnCancel)
@@ -143,7 +153,7 @@ const Frames = {
    * @param  {function} function_create_button this function is called when user confirms creating new category
    * @return {undefined}
    */
-  new_category: function(function_create_button){
+  new_category: function(function_create_button) {
     /*
     Show dialog for creatting new category
     */
@@ -183,5 +193,59 @@ const Frames = {
     });
     overoverlay.appendChild(btnOk);
     overoverlay.appendChild(btnCancel);
+  },
+
+
+  /**
+   * btnUndoShow - shows undo button that can do something
+   *
+   * @param  {function} undoFunction function triggered upon button press
+   * @param  {number} ttl=0        if set to larger than 0, tells us how many second the button lasts before disappearing
+   * @return {undefined}
+   */
+  btnUndoShow: function(undoFunction, ttl = 0) {
+    if (document.querySelector('#btnUndo') !== null) {
+      Frames.btnUndoHide(document.querySelector('#btnUndo'));
+    }
+
+    let undoButton = document.createElement('span');
+    undoButton.id = 'btnUndo';
+    undoButton.className = 'button material-icons btnUndo';
+    undoButton.textContent = 'undo';
+    undoButton.addEventListener('click', () => {
+      Frames.btnUndoHide(undoButton)
+    });
+    undoButton.addEventListener('click', undoFunction);
+    document.body.appendChild(undoButton);
+
+    if (ttl > 0)
+      setTimeout(() => {
+        Frames.btnUndoHide(undoButton)
+      }, 1000 + (ttl * 1000));
+  },
+
+
+  /**
+   * btnUndoHide - Hides undo button
+   *
+   * @param  {DOM} dom=null if set, removes this instance of btnUndo
+   * @return {undefined}
+   */
+  btnUndoHide: function(dom = null) {
+    if (dom == null) {
+      dom = document.querySelector('#btnUndo');
+      if (dom == null)
+        return;
+    }
+    if (dom.id !== 'btnUndo')
+      return;
+    let new_dom = dom.cloneNode(true);
+    dom.parentNode.replaceChild(new_dom, dom);
+    new_dom.id = '';
+    new_dom.style.animation = 'btnUndoFlowsOut 1s';
+    new_dom.style.animationFillMode = 'forwards';
+    setTimeout(() => {
+      new_dom.parentNode.removeChild(new_dom);
+    }, 10000);
   }
 }

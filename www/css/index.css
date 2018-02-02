@@ -40,7 +40,7 @@
 }
 
 .paintedDay {
-  background: rgba(101,101,101,0.2);
+  background: rgba(101, 101, 101, 0.2);
   width: 35px;
   height: 90%;
   display: flex;
@@ -58,7 +58,7 @@
   }
 }
 
-#dayTasks{
+#dayTasks {
   display: flex;
   flex-direction: column;
   font-size: 25px;
@@ -76,18 +76,18 @@
 }
 
 .dayTask span {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
-.eventColor{
+.eventColor {
   height: 1em;
 }
 
-#shownDate{
+#shownDate {
   font-size: 35px;
   height: 1.5em;
   text-align: center;
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
   border: none;
   color: #fff400;
 }
@@ -143,6 +143,40 @@ button {
   color: #3e5c61;
 }
 
+.btnUndo {
+  font-size: 100px;
+  position: fixed;
+  top: 80%;
+  left: 10%;
+  animation: btnUndoFlowsIn 1s;
+  z-index: 2000;
+}
+
+@keyframes btnUndoFlowsIn {
+  0% {
+    opacity: .1;
+    top: 100%;
+  }
+  30% {
+    top: 70%;
+  },
+  100% {
+    opacity: 1;
+    top: 80%;
+  }
+}
+
+@keyframes btnUndoFlowsOut {
+  0% {
+    opacity: 1;
+    top: 80%;
+  }
+  100% {
+    opacity: .1;
+    top: 100%;
+  }
+}
+
 .overlay {
   font-family: sans-serif;
   color: #FFFFFF;
@@ -154,8 +188,8 @@ button {
   display: flex;
   visibility: visible;
   flex-direction: column;
-  min-width: 100vw;
-  height: 100vh;
+  min-width: 100%;
+  height: 100%;
   text-align: center;
   background: #123456;
   justify-content: flex-start;

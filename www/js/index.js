@@ -46,10 +46,12 @@ const app = {
         paintToday();
         let btnNewRecord = document.querySelector('#btnNewRecord');
         btnNewRecord.addEventListener('click', () => {
+          Frames.btnUndoHide();
           Frames.new_record();
         });
         let btnMoreOptions = document.querySelector('#btnMoreOptions');
         btnMoreOptions.addEventListener('click', () => {
+          Frames.btnUndoHide();
           Frames.more_options();
         });
         let shownDate = document.querySelector('#shownDate');
