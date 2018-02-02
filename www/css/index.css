@@ -32,17 +32,36 @@
   overflow: hidden;
   border-bottom: 5px solid rgba(0, 0, 0, 0.5);
   border-radius: 20px;
+  height: 30vh;
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  align-items: center;
+}
+
+.paintedDay {
+  background: rgba(101,101,101,0.2);
+  width: 35px;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: dayFlowsIn 1s;
+}
+
+@keyframes dayFlowsIn {
+  0% {
+    margin-top: 100%;
+  }
+  100% {
+    margin-top: 0%;
+  }
 }
 
 body {
   display: flex;
   flex-direction: column;
   background: #063e6d;
-}
-
-#timeCanvas {
-  width: 100vw;
-  height: 30vh;
 }
 
 #buttons {
