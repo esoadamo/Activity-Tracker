@@ -8,16 +8,28 @@
   <link rel="stylesheet" type="text/css" href="css/index.css">
   <title>Time Tracker</title>
   <meta charset="utf-8">
-  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+  <link rel="shortcut icon" type="image/png" href="favicon.png" />
 </head>
 
 <body>
-  <div id='overCanvas'>
+  <div id='overCanvas'></div>
+  <input type="date" id="shownDate">
+  <div id='dayGeneratedData'>
   </div>
-  <canvas id='timeCanvas'></canvas>
+  <div id='dayTasks'>
+    <div class='dayTask'>
+      <div style='background: red; width: 40px;'></div>
+      <input type='time'>-<input type='time'> transportation
+    </div>
+    <div class='dayTask'>
+      <div style='background: red; width: 40px;'></div>
+      <input type='time'>-<input type='time'> transportation
+    </div>
+
+  </div>
   <span id='buttons' class="material-icons">
     <span id="btnNewRecord" class="button">add_circle</span>
-    <span id="btnMoreOptions" class="button">more_vert</span>
+  <span id="btnMoreOptions" class="button">more_vert</span>
   </span>
 </body>
 

@@ -58,6 +58,20 @@
   }
 }
 
+#dayGeneratedData{
+  display: flex;
+  flex-direction: column;
+}
+
+#shownDate{
+  font-size: 25px;
+  height: 1.5em;
+  text-align: center;
+  background: rgba(0,0,0,0);
+  border: none;
+  color: #fff400;
+}
+
 body {
   display: flex;
   flex-direction: column;
