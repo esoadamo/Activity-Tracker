@@ -118,8 +118,8 @@ function strf() {
 function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
     big_dict = {'online': online_data, 'offline': offline_data};
-    file.write(JSON.stringify(big_dict), onError=()=>{alert('Error writing to file');});
-  }, onErrorLoadFs=()=>{alert('Cannot load file system');}, onErrorCreateFile=()=>{alert('Cannot create save file');});
+    file.write(JSON.stringify(big_dict));
+  });
   if (('account' in offline_data) && ('server' in offline_data) && (offline_data['server'].length > 0))
     Server.push();
 }
@@ -132,6 +132,7 @@ function save() {
 function load() {
   FilesManipulator.open(FILE_DATA, (file) => {
     file.read((d) => {
+      alert(d);
       if (d.trim().length === 0)
         return;
       big_dict = JSON.parse(d);
