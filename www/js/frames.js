@@ -44,6 +44,7 @@ const Frames = {
           'e': stringToMinutes(inputEnd.value),
           'c': category
         });
+        compressDay(year, month, day);
         overlay.parentNode.removeChild(overlay);
         save();
         paintToday();
@@ -79,6 +80,17 @@ const Frames = {
       Frames.sync_setup();
     });
     overlayBtns.push(btnSyncSetup);
+
+    let btnCompressData = document.createElement('button');
+    btnCompressData.className = 'button';
+    btnCompressData.textContent = 'Compress all data';
+    btnCompressData.addEventListener('click', () => {
+      alert('This will take some time...');
+      compressAll();
+      alert('Done');
+      paintToday();
+    });
+    overlayBtns.push(btnCompressData);
 
     for (let btn of overlayBtns){
     overlay.appendChild(btn);

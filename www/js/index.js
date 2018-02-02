@@ -149,6 +149,71 @@ function load() {
   });
 }
 
+
+/**
+ * compressAll - compresses all saved data
+ *
+ * @return {undefined}
+ */
+function compressAll(){
+  for (let year of Object.keys(online_data['events']))
+    for (let month of Object.keys(online_data['events'][year]))
+      for (let day of Object.keys(online_data['events'][year][month]))
+        compressDay(year, month, day);
+}
+
+/**
+ * compressDay - compressed online data of the day, merging splited continuous events, removing invalid events and overlays
+ *
+ * @param  {number} year  year to compress
+ * @param  {number} month month to compress
+ * @param  {number} day   day to compress
+ * @return {undefined}
+ */
+function compressDay(year, month, day){
+    if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
+      let dayMinutes = {};
+      for (let i = 0; i < 24 * 60; i++)
+        dayMinutes[i] = null;
+      for (let event of online_data['events'][year][month][day]) {
+        let start = event['s'];
+        let duration = event['e'] - start;
+        let category = event['c'];
+
+        // Skip invalid inputs
+        if (duration < 0)
+          continue;
+
+        for (let i = 0; i < duration; i++)
+          dayMinutes[start + i] = category;
+      }
+
+      let newEvents = [];
+      let currentEvent = null;
+      for (let i = 0; i < 24 * 60; i++){
+        let category = dayMinutes[i];
+        if ((category === null) && (currentEvent === null))
+            continue;
+        if (currentEvent === null)
+          currentEvent = {'c': category, 's': i}
+        if (category === currentEvent['c'])
+          continue;
+        currentEvent['e'] = i; // event is not in this minute, so it has to end in the previous one
+        newEvents.push(currentEvent);
+        if (category === null)
+          currentEvent = null;
+        else
+          currentEvent = {'c': category, 's': i}
+      }
+      if (currentEvent !== null){
+        currentEvent['e'] = (24 * 60);
+        newEvents.push(currentEvent);
+      }
+
+      online_data['events'][year][month][day] = newEvents;
+    }
+}
+
 /**
  * generateTable - repaints the table canvas to show selected year and month
  *
