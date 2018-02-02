@@ -133,6 +133,13 @@ button {
   filter: brightness(0.7);
 }
 
+#btnJumpToToday {
+  font-size: 100px;
+  color: #fff400;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
 #btnNewRecord {
   font-size: 100px;
   color: #dc143c;
@@ -156,7 +163,7 @@ button {
   0% {
     opacity: .1;
     top: 100%;
-  }
+  },
   30% {
     top: 70%;
   },

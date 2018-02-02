@@ -59,6 +59,8 @@ const app = {
           let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
           generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
         });
+
+        document.querySelector('#btnJumpToToday').addEventListener('click', ()=>{paintToday();});
         break;
     }
   }
@@ -288,6 +290,15 @@ function generateTable(year, month, day, daysToShow = null) {
   // Change shown date value
   let shownDate = document.querySelector('#shownDate');
   shownDate.value = `${formatNumber(year, 4)}-${formatNumber(month, 2)}-${formatNumber(day, 2)}`;
+
+  // Show btnJumpToToday button if required
+  let today = new Date();
+  let btnJumpToToday = document.querySelector('#btnJumpToToday');
+  if (shownDate.value !== `${formatNumber(today.getFullYear(), 4)}-${formatNumber(today.getMonth() + 1, 2)}-${formatNumber(today.getDate(), 2)}`){
+    btnJumpToToday.style.opacity = '1';
+  } else {
+    btnJumpToToday.style.opacity = '0';
+  }
 
   // Show detail day's data
   let dayTasks = document.querySelector('#dayTasks');
