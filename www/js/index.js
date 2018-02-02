@@ -118,8 +118,8 @@ function strf() {
 function save() {
   FilesManipulator.open(FILE_DATA, (file) => {
     big_dict = {'online': online_data, 'offline': offline_data};
-    file.write(JSON.stringify(big_dict));
-  });
+    file.write(JSON.stringify(big_dict), onError=()=>{alert('Error writing to file');});
+  }, onErrorLoadFs=()=>{alert('Cannot load file system');}, onErrorCreateFile=()=>{alert('Cannot create save file');});
   if (('account' in offline_data) && ('server' in offline_data) && (offline_data['server'].length > 0))
     Server.push();
 }
@@ -143,7 +143,7 @@ function load() {
         online_data = big_dict; // Old version compatibility
       paintToday();
     });
-  });
+  }, onErrorLoadFs=()=>{alert('Cannot load file system');}, onErrorCreateFile=()=>{alert('Cannot create save file');});
 }
 
 /**
