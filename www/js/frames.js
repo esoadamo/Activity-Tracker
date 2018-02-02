@@ -101,16 +101,16 @@ const Frames = {
     overlay.innerHTML = '<input type="text" id="onlineURL" placeholder="online server url"></input><input type="text" id="onlineUsername" placeholder="account name"></input>';
     let txtUsername = document.querySelector('#onlineUsername');
     let txtServer = document.querySelector('#onlineURL');
-    if ('account' in online_data)
+    if ('account' in offline_data)
       txtUsername.value = offline_data['account'];
-    if ('server' in online_data)
+    if ('server' in offline_data)
       txtServer.value = offline_data['server'];
     let btnSave = document.createElement('button');
     btnSave.className = 'button';
     btnSave.textContent = 'Save';
     btnSave.addEventListener('click', ()=> {
-      online_data['account'] = txtUsername.value;
-      online_data['server'] = txtServer.value;
+      offline_data['account'] = txtUsername.value;
+      offline_data['server'] = txtServer.value;
       save();
       overlay.parentNode.removeChild(overlay);
     });

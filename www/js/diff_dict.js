@@ -26,13 +26,12 @@ function getDictChanges(theNew, theOld = null) {
   function gedChangedKeys(theNew, theOld) {
     let changedKeys = {};
     for (let key of Object.keys(theNew)) {
-      if ((!(key in theOld)) || (theNew[key] !== theOld[key]))
-        changedKeys[key] = theNew[key];
-      else if ((theOld[key] instanceof Object) && (theNew[key] instanceof Object)) {
+      if ((theOld[key] instanceof Object) && (theNew[key] instanceof Object)) {
         let subChanged = gedChangedKeys(theNew[key], theOld[key]);
         if (subChanged !== null)
           changedKeys[key] = subChanged;
-      }
+      } else if ((!(key in theOld)) || (theNew[key] !== theOld[key]))
+        changedKeys[key] = theNew[key];
     }
     return Object.keys(changedKeys).length > 0 ? changedKeys : null;
   }

@@ -8,7 +8,8 @@ let online_data = {
 
 let offline_data = {
   'account': '',
-  'server': ''
+  'server': '',
+  'server_data': {}
 }
 
 /**
@@ -128,8 +129,12 @@ function load() {
       if (d.trim().length === 0)
         return;
       big_dict = JSON.parse(d);
-      online_data = big_dict['online'];
-      offline_data = big_dict['offline'];
+      if ('online' in big_dict)
+        online_data = big_dict['online'];
+      if ('offline' in big_dict)
+        offline_data = big_dict['offline'];
+      else
+        online_data = big_dict; // Old version compatibility
       paintToday();
     });
   });
