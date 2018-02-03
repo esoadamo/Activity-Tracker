@@ -316,7 +316,7 @@ function generateTable(year, month, day, daysToShow = null) {
     for (let event of online_data['events'][year][month][day]){
       if (event['e'] > lastEventEnd)
         lastEventEnd = event['e'];
-      dayTasks.innerHTML += `<div class='dayTask'><input type='time' value="${minutesToString(event['s'])}"><span style='background: ${online_data['categories'][event['c']]};' class='eventColor'></span><input type='time' value="${minutesToString(event['e'])}"></span><span>${[event['c']]}</span></div>`;
+      dayTasks.innerHTML += `<div class='dayTask'><input type='time' value="${minutesToString(event['s'])}"><span style='background: ${online_data['categories'][event['c']]}; color: ${online_data['categories'][event['c']]};' class='eventColor'>-</span><input type='time' value="${minutesToString(event['e'])}"></span><span>${[event['c']]}</span></div>`;
     }
 
   // Hide new record button if the day is fully filled

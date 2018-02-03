@@ -245,4 +245,7 @@ input[type="text"] {
 input[type="time"] {
   font-size: 1em;
   width: auto;
+  background: rgba(0,0,0,0);
+  border: none;
+  color: #fff97f;
 }
