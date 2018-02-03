@@ -236,6 +236,26 @@ button {
   align-items: center;
 }
 
+.overlayFadeIn {
+  animation: overlayFlowsIn .5s linear 0s 1 normal;
+  animation-fill-mode: forwards;
+}
+
+.overlayFadeOut {
+  animation: overlayFlowsIn .5s linear 0s 1 reverse;
+  animation-fill-mode: forwards;
+}
+
+@keyframes overlayFlowsIn {
+  0% {
+    left: -110vmax;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+
 input[type="text"] {
   font-size: 1.4em;
   width: 100%;

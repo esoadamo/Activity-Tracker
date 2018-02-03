@@ -1,8 +1,13 @@
 const Frames = {
 
+  /**
+   * overlay_create - creates overlay DOM and returns it
+   *
+   * @return {DOM}  overlay added to the body   
+   */
   overlay_create: function() {
     let overlay = document.createElement('div');
-    overlay.className = 'overlay';
+    overlay.className = 'overlay overlayFadeIn';
 
     document.body.appendChild(overlay);
 
@@ -21,7 +26,12 @@ const Frames = {
   },
 
   overlay_destroy: function(overlay) {
-    overlay.parentNode.removeChild(overlay);
+    overlay.classList.remove('overlayFadeIn');
+    overlay.classList.add('overlayFadeOut');
+    overlay.style.animation = 'none';
+    overlay.offsetHeight;
+    overlay.style.animation = null;
+    setTimeout(()=>{overlay.parentNode.removeChild(overlay);}, 1500);
     delete backButtonActions[overlay.dataset.backButtonActionIndex];
   },
 
@@ -202,7 +212,7 @@ const Frames = {
       }
       online_data['categories'][newCategory] = document.querySelector('#catColor').value;
       function_create_button(newCategory);
-      Frames.overlay_destroy(overlay);
+      Frames.overlay_destroy(overoverlay);
       save();
     });
     let btnCancel = document.createElement('button');
@@ -210,7 +220,7 @@ const Frames = {
     btnCancel.innerHTML = 'cancel';
     btnCancel.style.background = '#ff4900';
     btnCancel.addEventListener('click', () => {
-      Frames.overlay_destroy(overlay);
+      Frames.overlay_destroy(overoverlay);
     });
     overoverlay.appendChild(btnOk);
     overoverlay.appendChild(btnCancel);
