@@ -3,7 +3,7 @@ const Frames = {
   /**
    * overlay_create - creates overlay DOM and returns it
    *
-   * @return {DOM}  overlay added to the body   
+   * @return {DOM}  overlay added to the body
    */
   overlay_create: function() {
     let overlay = document.createElement('div');
@@ -25,6 +25,13 @@ const Frames = {
     return overlay;
   },
 
+
+  /**
+   * overlay_destroy - destroys overlay
+   *
+   * @param  {type} overlay description
+   * @return {type}         description
+   */
   overlay_destroy: function(overlay) {
     overlay.classList.remove('overlayFadeIn');
     overlay.classList.add('overlayFadeOut');
