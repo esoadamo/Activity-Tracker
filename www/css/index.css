@@ -73,6 +73,16 @@
   margin-bottom: 10px;
   color: #FFFFFF;
   text-align: center;
+  animation: taskFlowsIn 1s;
+}
+
+@keyframes taskFlowsIn {
+  0% {
+    padding-left: 150%;
+  }
+  100% {
+    padding-left: inherit;
+  }
 }
 
 .dayTask span {
