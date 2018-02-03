@@ -30,8 +30,8 @@
         <icon density="xxhdpi" src="res/icon/android/icon-144-xxhdpi.png" />
         <icon density="xxxhdpi" src="res/icon/android/icon-192-xxhdpi.png" />
     </platform>
-    <engine name="browser" spec="^5.0.3" />
-    <engine name="android" spec="^6.3.0" />
     <plugin name="cordova-plugin-whitelist" spec="^1.3.3" />
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
+    <engine name="browser" spec="^5.0.3" />
+    <engine name="android" spec="^6.3.0" />
 </widget>
