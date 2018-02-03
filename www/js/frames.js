@@ -250,5 +250,39 @@ const Frames = {
     setTimeout(() => {
       new_dom.parentNode.removeChild(new_dom);
     }, 10000);
+  },
+
+  /**
+   * btnShow - animates fade in of a button
+   *
+   * @param  {DOM} dom button DOM
+   * @return {undefined}
+   */
+  btnShow: function(dom) {
+    if (((' ' + dom.className + ' ').indexOf(' buttonDisappearAnimation ') === -1) && ((' ' + btnJumpToToday.className + ' ').indexOf(' buttonAppearAnimation ') !== -1))
+      return;
+    dom.classList.remove('buttonDisappearAnimation');
+    dom.classList.add('buttonAppearAnimation');
+    dom.style.animation = 'none';
+    dom.offsetHeight;
+    dom.style.animation = null;
+
+  },
+
+
+  /**
+   * btnHide - animates fade out of a button
+   *
+   * @param  {DOM} dom button DOM
+   * @return {undefined}
+   */
+  btnHide: function(dom) {
+    if (((' ' + btnJumpToToday.className + ' ').indexOf(' buttonAppearAnimation ') === -1) && ((' ' + dom.className + ' ').indexOf(' buttonDisappearAnimation ') !== -1))
+      return;
+    dom.classList.remove('buttonAppearAnimation');
+    dom.classList.add('buttonDisappearAnimation');
+    dom.style.animation = 'none';
+    dom.offsetHeight;
+    dom.style.animation = null;
   }
 }

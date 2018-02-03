@@ -45,11 +45,13 @@ const app = {
         load();
         paintToday();
         let btnNewRecord = document.querySelector('#btnNewRecord');
+        Frames.btnShow(btnNewRecord);
         btnNewRecord.addEventListener('click', () => {
           Frames.btnUndoHide();
           Frames.new_record();
         });
         let btnMoreOptions = document.querySelector('#btnMoreOptions');
+        Frames.btnShow(btnMoreOptions);
         btnMoreOptions.addEventListener('click', () => {
           Frames.btnUndoHide();
           Frames.more_options();
@@ -60,7 +62,9 @@ const app = {
           generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
         });
 
-        document.querySelector('#btnJumpToToday').addEventListener('click', ()=>{paintToday();});
+        document.querySelector('#btnJumpToToday').addEventListener('click', () => {
+          paintToday();
+        });
         break;
     }
   }
@@ -159,7 +163,7 @@ function load() {
  *
  * @return {undefined}
  */
-function compressAll(){
+function compressAll() {
   for (let year of Object.keys(online_data['events']))
     for (let month of Object.keys(online_data['events'][year]))
       for (let day of Object.keys(online_data['events'][year][month]))
@@ -174,48 +178,54 @@ function compressAll(){
  * @param  {number} day   day to compress
  * @return {undefined}
  */
-function compressDay(year, month, day){
-    if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
-      let dayMinutes = {};
-      for (let i = 0; i < 24 * 60; i++)
-        dayMinutes[i] = null;
-      for (let event of online_data['events'][year][month][day]) {
-        let start = event['s'];
-        let duration = event['e'] - start;
-        let category = event['c'];
+function compressDay(year, month, day) {
+  if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
+    let dayMinutes = {};
+    for (let i = 0; i < 24 * 60; i++)
+      dayMinutes[i] = null;
+    for (let event of online_data['events'][year][month][day]) {
+      let start = event['s'];
+      let duration = event['e'] - start;
+      let category = event['c'];
 
-        // Skip invalid inputs
-        if (duration < 0)
-          continue;
+      // Skip invalid inputs
+      if (duration < 0)
+        continue;
 
-        for (let i = 0; i < duration; i++)
-          dayMinutes[start + i] = category;
-      }
-
-      let newEvents = [];
-      let currentEvent = null;
-      for (let i = 0; i < 24 * 60; i++){
-        let category = dayMinutes[i];
-        if ((category === null) && (currentEvent === null))
-            continue;
-        if (currentEvent === null)
-          currentEvent = {'c': category, 's': i}
-        if (category === currentEvent['c'])
-          continue;
-        currentEvent['e'] = i; // event is not in this minute, so it has to end in the previous one
-        newEvents.push(currentEvent);
-        if (category === null)
-          currentEvent = null;
-        else
-          currentEvent = {'c': category, 's': i}
-      }
-      if (currentEvent !== null){
-        currentEvent['e'] = (24 * 60);
-        newEvents.push(currentEvent);
-      }
-
-      online_data['events'][year][month][day] = newEvents;
+      for (let i = 0; i < duration; i++)
+        dayMinutes[start + i] = category;
     }
+
+    let newEvents = [];
+    let currentEvent = null;
+    for (let i = 0; i < 24 * 60; i++) {
+      let category = dayMinutes[i];
+      if ((category === null) && (currentEvent === null))
+        continue;
+      if (currentEvent === null)
+        currentEvent = {
+          'c': category,
+          's': i
+        }
+      if (category === currentEvent['c'])
+        continue;
+      currentEvent['e'] = i; // event is not in this minute, so it has to end in the previous one
+      newEvents.push(currentEvent);
+      if (category === null)
+        currentEvent = null;
+      else
+        currentEvent = {
+          'c': category,
+          's': i
+        }
+    }
+    if (currentEvent !== null) {
+      currentEvent['e'] = (24 * 60);
+      newEvents.push(currentEvent);
+    }
+
+    online_data['events'][year][month][day] = newEvents;
+  }
 }
 
 /**
@@ -294,12 +304,10 @@ function generateTable(year, month, day, daysToShow = null) {
   // Show btnJumpToToday button if required
   let today = new Date();
   let btnJumpToToday = document.querySelector('#btnJumpToToday');
-  if (shownDate.value !== `${formatNumber(today.getFullYear(), 4)}-${formatNumber(today.getMonth() + 1, 2)}-${formatNumber(today.getDate(), 2)}`){
-    btnJumpToToday.style.opacity = '1';
-  } else {
-    btnJumpToToday.style.opacity = '0';
-  }
-
+  if (shownDate.value !== `${formatNumber(today.getFullYear(), 4)}-${formatNumber(today.getMonth() + 1, 2)}-${formatNumber(today.getDate(), 2)}`)
+    Frames.btnShow(btnJumpToToday);
+  else
+    Frames.btnHide(btnJumpToToday);
   // Show detail day's data
   let dayTasks = document.querySelector('#dayTasks');
   dayTasks.innerHTML = '';
@@ -334,6 +342,7 @@ function generateExportTable(year, month) {
   for (let day = 1; day <= daysInMonth; day++) {
     let upperPos = lineHeight * day;
     // Paint day number
+    ctx.fillStyle = "#000000";
     ctx.fillText(formatNumber(day, 2), 0, upperPos);
     // Paint lower line
     ctx.beginPath();

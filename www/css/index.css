@@ -133,10 +133,30 @@ button {
   filter: brightness(0.7);
 }
 
+.buttonAppearAnimation {
+  animation: buttonAppear .5s linear 0s 1 normal;
+}
+
+.buttonDisappearAnimation {
+  animation: buttonAppear .5s linear 0s 1 reverse;
+}
+
+@keyframes buttonAppear {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  },
+  1% {
+    visibility: visible;
+  },
+  100% {
+    opacity: 1;
+  }
+}
+
 #btnJumpToToday {
   font-size: 100px;
   color: #fff400;
-  opacity: 0;
   animation-fill-mode: forwards;
 }
 
