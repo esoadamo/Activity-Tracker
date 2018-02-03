@@ -145,18 +145,22 @@ button {
 
 .buttonAppearAnimation {
   animation: buttonAppear .5s linear 0s 1 normal;
+  animation-fill-mode: forwards;
 }
 
 .buttonDisappearAnimation {
   animation: buttonAppear .5s linear 0s 1 reverse;
+  animation-fill-mode: forwards;
 }
 
 @keyframes buttonAppear {
   0% {
     opacity: 0;
+    position: fixed;
     visibility: hidden;
   },
   1% {
+    position: static;
     visibility: visible;
   },
   100% {
@@ -167,7 +171,6 @@ button {
 #btnJumpToToday {
   font-size: 100px;
   color: #fff400;
-  animation-fill-mode: forwards;
 }
 
 #btnNewRecord {

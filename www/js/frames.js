@@ -31,7 +31,7 @@ const Frames = {
           timeStart = event['e'];
 
     let overlayText = document.createElement('div');
-    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(timeStart + online_data['period'])}">?`;
+    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(Math.min(timeStart + online_data['period'], (24 * 60) - 1))}">?`;
     overlay.appendChild(overlayText);
 
     function createCategoryButton(category) {
