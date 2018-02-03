@@ -13,6 +13,8 @@ let offline_data = {
   'server_data': {}
 }
 
+const backButtonActions = {};
+
 /**
  * paintToday - repaints the canvas with current date (year and month)
  *
@@ -65,6 +67,15 @@ const app = {
         document.querySelector('#btnJumpToToday').addEventListener('click', () => {
           paintToday();
         });
+
+        document.addEventListener("backbutton", (e)=>{
+          if (Object.keys(backButtonActions).length === 0){
+            navigator.app.exitApp();
+            return;
+          }
+          e.preventDefault();
+          backButtonActions[Math.max(...Object.keys(backButtonActions))]();
+        }, false);
         break;
     }
   }

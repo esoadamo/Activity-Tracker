@@ -229,7 +229,7 @@ button {
   visibility: visible;
   flex-direction: column;
   min-width: 100%;
-  height: 100%;
+  height: 300vh;
   text-align: center;
   background: #123456;
   justify-content: flex-start;

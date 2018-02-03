@@ -1,14 +1,37 @@
 const Frames = {
 
+  overlay_create: function() {
+    let overlay = document.createElement('div');
+    overlay.className = 'overlay';
+
+    document.body.appendChild(overlay);
+
+    overlay.dataset.backButtonActionIndex = Math.max(0, ...Object.keys(backButtonActions)) + 1;
+
+    backButtonActions[overlay.dataset.backButtonActionIndex] = () => {
+      Frames.overlay_destroy(overlay);
+    }
+
+    document.body.scrollLeft = 0;
+    document.body.scrollTop = 0;
+    document.documentElement.scrollLeft = 0;
+    document.documentElement.scrollTop = 0;
+
+    return overlay;
+  },
+
+  overlay_destroy: function(overlay) {
+    overlay.parentNode.removeChild(overlay);
+    delete backButtonActions[overlay.dataset.backButtonActionIndex];
+  },
+
   /**
    * new_record - shows frame for adding new record
    *
    * @return {type}  undefined
    */
   new_record: function() {
-    let overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    document.body.appendChild(overlay);
+    let overlay = Frames.overlay_create();
 
     let dateData = document.querySelector('#shownDate').value.split('-'); // yyyy-mm-dd format
     for (let i = 0; i < dateData.length; i++)
@@ -56,7 +79,7 @@ const Frames = {
         }, undoTimeout);
         online_data['events'][year][month][day].push(newEvent);
         compressDay(year, month, day);
-        overlay.parentNode.removeChild(overlay);
+        Frames.overlay_destroy(overlay);
         save();
         generateTable(year, month, day);
       });
@@ -79,9 +102,7 @@ const Frames = {
    * @return {undefined}
    */
   more_options: function() {
-    let overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    document.body.appendChild(overlay);
+    let overlay = Frames.overlay_create();
 
     let overlayBtns = [];
     let btnSyncSetup = document.createElement('button');
@@ -106,7 +127,7 @@ const Frames = {
     for (let btn of overlayBtns) {
       overlay.appendChild(btn);
       btn.addEventListener('click', () => {
-        overlay.parentNode.removeChild(overlay);
+        Frames.overlay_destroy(overlay);
       });
     }
   },
@@ -117,9 +138,7 @@ const Frames = {
    * @return {undefined}
    */
   sync_setup: function() {
-    let overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    document.body.appendChild(overlay);
+    let overlay = Frames.overlay_create();
 
     overlay.innerHTML = '<input type="text" id="onlineURL" placeholder="online server url"></input><input type="text" id="onlineUsername" placeholder="account name"></input>';
     let txtUsername = document.querySelector('#onlineUsername');
@@ -135,14 +154,14 @@ const Frames = {
       offline_data['account'] = txtUsername.value;
       offline_data['server'] = txtServer.value;
       save();
-      overlay.parentNode.removeChild(overlay);
+      Frames.overlay_destroy(overlay);
     });
 
     let btnCancel = document.createElement('button');
     btnCancel.className = 'button';
     btnCancel.textContent = 'Cancel';
     btnCancel.addEventListener('click', () => {
-      overlay.parentNode.removeChild(overlay);
+      Frames.overlay_destroy(overlay);
     });
 
     overlay.appendChild(btnSave);
@@ -160,9 +179,8 @@ const Frames = {
     /*
     Show dialog for creatting new category
     */
-    let overoverlay = document.createElement('div');
-    overoverlay.className = 'overlay';
-    overoverlay.style.zIndex = 1001;
+    let overoverlay = Frames.overlay_create();
+
     document.body.appendChild(overoverlay);
     overoverlay.innerHTML = `<div class="button" style="display:flex; flex-direction: row; height: 30vh;">
           <input type="color" style="flex-grow: 1; height: 100%; min-width: 20%" id="catColor">
@@ -184,7 +202,7 @@ const Frames = {
       }
       online_data['categories'][newCategory] = document.querySelector('#catColor').value;
       function_create_button(newCategory);
-      overoverlay.parentNode.removeChild(overoverlay);
+      Frames.overlay_destroy(overlay);
       save();
     });
     let btnCancel = document.createElement('button');
@@ -192,7 +210,7 @@ const Frames = {
     btnCancel.innerHTML = 'cancel';
     btnCancel.style.background = '#ff4900';
     btnCancel.addEventListener('click', () => {
-      overoverlay.parentNode.removeChild(overoverlay);
+      Frames.overlay_destroy(overlay);
     });
     overoverlay.appendChild(btnOk);
     overoverlay.appendChild(btnCancel);
