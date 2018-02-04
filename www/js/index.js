@@ -68,8 +68,8 @@ const app = {
           paintToday();
         });
 
-        document.addEventListener("backbutton", (e)=>{
-          if (Object.keys(backButtonActions).length === 0){
+        document.addEventListener("backbutton", (e) => {
+          if (Object.keys(backButtonActions).length === 0) {
             navigator.app.exitApp();
             return;
           }
@@ -324,15 +324,20 @@ function generateTable(year, month, day, daysToShow = null) {
   dayTasks.innerHTML = '';
   let lastEventEnd = 0;
   if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month]))
-    for (let event of online_data['events'][year][month][day]){
+    for (let event of online_data['events'][year][month][day]) {
       if (event['e'] > lastEventEnd)
         lastEventEnd = event['e'];
-      dayTasks.innerHTML += `<div class='dayTask'><input type='time' value="${minutesToString(event['s'])}"><span style='background: ${online_data['categories'][event['c']]}; color: ${online_data['categories'][event['c']]};' class='eventColor'>-</span><input type='time' value="${minutesToString(event['e'])}"></span><span>${[event['c']]}</span></div>`;
+      dayTasks.innerHTML += `<div class='dayTask'>
+      <input type='time' value="${minutesToString(event['s'])}">
+      <span style='background: ${online_data['categories'][event['c']]}; color: ${online_data['categories'][event['c']]};' class='eventColor'>-</span>
+      <input type='time' value="${minutesToString(event['e'])}">
+      <span>${[event['c']]}</span>
+      </div>`;
     }
 
   // Hide new record button if the day is fully filled
   let btnNewRecord = document.querySelector('#btnNewRecord');
-  if (lastEventEnd >= (24 * 60)-1)
+  if (lastEventEnd >= (24 * 60) - 1)
     Frames.btnHide(btnNewRecord);
   else
     Frames.btnShow(btnNewRecord);
