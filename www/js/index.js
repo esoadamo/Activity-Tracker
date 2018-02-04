@@ -327,10 +327,17 @@ function generateTable(year, month, day, daysToShow = null) {
     for (let event of online_data['events'][year][month][day]) {
       if (event['e'] > lastEventEnd)
         lastEventEnd = event['e'];
+      let event_id = 'event-' + Base64.encode(`${year}-${month}-${day}:${JSON.stringify(event)}`);
+      let input_id = '';
+      while (true){
+        input_id = 'dayTask-input-'+(Math.random() + 1).toString(36).substring(7);
+        if (document.querySelector('#'+input_id) === null)
+          break;
+      }
       dayTasks.innerHTML += `<div class='dayTask'>
-      <input type='time' value="${minutesToString(event['s'])}">
+      <input id="${input_id}-s" type='time' value="${minutesToString(event['s'])}" onchange="eventChangeTime('s', '${event_id}', '${input_id}')">
       <span style='background: ${online_data['categories'][event['c']]}; color: ${online_data['categories'][event['c']]};' class='eventColor'>-</span>
-      <input type='time' value="${minutesToString(event['e'])}">
+      <input id="${input_id}-e" type='time' value="${minutesToString(event['e'])}" onchange="eventChangeTime('e', '${event_id}', '${input_id}')">
       <span>${[event['c']]}</span>
       </div>`;
     }
@@ -341,6 +348,85 @@ function generateTable(year, month, day, daysToShow = null) {
     Frames.btnHide(btnNewRecord);
   else
     Frames.btnShow(btnNewRecord);
+}
+
+
+/**
+ * splitClassic - this is how the split functions works in every other language
+ *
+ * @param  {string} string   string to split
+ * @param  {string} split    split by what
+ * @param  {number} limit=-1 if set to higher than -1 limits the length of the array
+ * @param  {number} i=0      used in recursive calls, maximum value is same as the level if level is enabled
+ * @return {array}          splitted array
+ */
+function splitClassic(string, split, limit=-1, i=0){
+  let splitIndex = string.indexOf(split);
+  if (i === limit)
+    return [string];
+  if (splitIndex === -1)
+    return [];
+  let splittedArray = splitClassic(string.substring(splitIndex + split.length), split, limit, limit > -1 ? i+1 : -1);
+  splittedArray.splice(0, 0, string.substring(0, splitIndex));
+  return splittedArray;
+}
+
+
+/**
+ * eventGetLocation - finds year, month, day and index from eventData
+ *
+ * @param  {string} eventData event data in format yyyy-mm-dd:eventJSONDict
+ * @return {array}           [year, month, day, indexInDayArray]
+ */
+function eventGetLocation(eventData) {
+  let dateAndValue = splitClassic(eventData, ':', 1);
+  let date = dateAndValue[0].split('-');
+  let year = date[0];
+  let month = date[1];
+  let day = date[2];
+  let targetEvent = JSON.parse(dateAndValue[1]);
+  if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
+    for (let i = 0; i < online_data['events'][year][month][day].length; i++) {
+      let event = online_data['events'][year][month][day][i];
+      if ((event['e'] === targetEvent['e']) && (event['s'] === targetEvent['s']) && (event['c'] === targetEvent['c']))
+        return [year, month, day, i];
+    }
+  }
+  return null;
+}
+
+/**
+ * eventChangeTime - changes time of event, based on GUI day task change
+ *
+ * @param  {string} startOrEnd 's' or 'e'
+ * @param  {string} eventID    base64 encoded id or tag or event
+ * @param  {string} inputID    id of the calling dom the new value is taken from
+ * @return {undefined}
+ */
+function eventChangeTime(startOrEnd, eventID, inputID) {
+  let inputDOM = document.querySelector('#' + inputID + '-' + startOrEnd);
+  let eventLocation = eventGetLocation(Base64.decode(splitClassic(eventID, '-', 1)[1]));
+  if (eventLocation === null)
+    return;
+  let year = eventLocation[0];
+  let month = eventLocation[1];
+  let day = eventLocation[2];
+
+  let undoTimeout = 7;
+  let undoCopy = online_data['events'][year][month][day].slice();
+  Frames.btnUndoShow(() => {
+    online_data['events'][year][month][day] = undoCopy;
+    save();
+    generateTable(year, month, day);
+  }, undoTimeout);
+
+  let event = JSON.parse(JSON.stringify(online_data['events'][year][month][day].splice([eventLocation[3]], 1)[0]));
+  event[startOrEnd] = stringToMinutes(inputDOM.value);
+  online_data['events'][year][month][day].push(event);
+  compressDay(year, month, day);
+
+  save();
+  generateTable(year, month, day);
 }
 
 
