@@ -38,7 +38,9 @@ const Frames = {
     overlay.style.animation = 'none';
     overlay.offsetHeight;
     overlay.style.animation = null;
-    setTimeout(()=>{overlay.parentNode.removeChild(overlay);}, 1500);
+    setTimeout(() => {
+      overlay.parentNode.removeChild(overlay);
+    }, 1500);
     delete backButtonActions[overlay.dataset.backButtonActionIndex];
   },
 
@@ -130,16 +132,62 @@ const Frames = {
     });
     overlayBtns.push(btnSyncSetup);
 
-    let btnCompressData = document.createElement('button');
-    btnCompressData.className = 'button';
-    btnCompressData.textContent = 'Compress all data';
-    btnCompressData.addEventListener('click', () => {
+    let btnAutofillSleep = document.createElement('button');
+    btnAutofillSleep.className = 'button';
+    btnAutofillSleep.textContent = 'Autofill sleep';
+    btnAutofillSleep.addEventListener('click', () => {
       alert('This will take some time...');
-      compressAll();
+      let unfinishedDays = [];
+      let finishingTime = stringToMinutes("23:59")
+      for (let year of Object.keys(online_data['events']))
+        for (let month of Object.keys(online_data['events'][year]))
+          for (let day of Object.keys(online_data['events'][year][month])) {
+            let dayFinished = false;
+            for (let event of online_data['events'][year][month][day])
+              if (event['e'] >= finishingTime) {
+                dayFinished = true;
+                break;
+              }
+            if (!dayFinished)
+              unfinishedDays.push({
+                'y': year,
+                'm': month,
+                'd': day
+              });
+          }
+      for (let date of unfinishedDays) {
+        let tommorowDate = new Date(new Date(date['y'], date['m'] - 1, date['d']).getTime() + (24 * 3600 * 1000));
+        let tommorowYear = tommorowDate.getFullYear();
+        let tommorowMonth = tommorowDate.getMonth() + 1;
+        let tommorowDay = tommorowDate.getDate();
+        let tommorowStartsWithSleep = false;
+        if ((tommorowYear in online_data['events']) && (tommorowMonth in online_data['events'][tommorowYear]) && (tommorowDay in online_data['events'][tommorowYear][tommorowMonth]))
+          for (let event of online_data['events'][tommorowYear][tommorowMonth][tommorowDay])
+            if ((event['s'] === 0) && (event['c'] === 'sleep')) {
+              tommorowStartsWithSleep = true;
+              break;
+            }
+        if (!tommorowStartsWithSleep)
+          continue;
+        let sleepTime = 0;
+        for (let event of online_data['events'][date['y']][date['m']][date['d']])
+          if (event['e'] > sleepTime)
+            sleepTime = event['e'];
+        if (sleepTime < stringToMinutes("18:00")) // nobody goes to sleep before 6PM
+          continue;
+        online_data['events'][date['y']][date['m']][date['d']].push({
+          's': sleepTime,
+          'e': finishingTime,
+          'c': 'sleep'
+        });
+        compressDay(date['y'], date['m'], date['d']);
+        let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
+        generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
+      }
       alert('Done');
       paintToday();
     });
-    overlayBtns.push(btnCompressData);
+    overlayBtns.push(btnAutofillSleep);
 
     for (let btn of overlayBtns) {
       overlay.appendChild(btn);

@@ -2,7 +2,9 @@ const FILE_DATA = "data.json"; // file with all data
 
 let online_data = {
   'period': 30, // how long does one period lasts in minutes
-  'categories': {},
+  'categories': {
+    'sleep': '#687676'
+  },
   'events': {}, // by default user does not have any data
 }
 
@@ -329,9 +331,9 @@ function generateTable(year, month, day, daysToShow = null) {
         lastEventEnd = event['e'];
       let event_id = 'event-' + Base64.encode(`${year}-${month}-${day}:${JSON.stringify(event)}`);
       let input_id = '';
-      while (true){
-        input_id = 'dayTask-input-'+(Math.random() + 1).toString(36).substring(7);
-        if (document.querySelector('#'+input_id) === null)
+      while (true) {
+        input_id = 'dayTask-input-' + (Math.random() + 1).toString(36).substring(7);
+        if (document.querySelector('#' + input_id) === null)
           break;
       }
       dayTasks.innerHTML += `<div class='dayTask'>
@@ -360,13 +362,13 @@ function generateTable(year, month, day, daysToShow = null) {
  * @param  {number} i=0      used in recursive calls, maximum value is same as the level if level is enabled
  * @return {array}          splitted array
  */
-function splitClassic(string, split, limit=-1, i=0){
+function splitClassic(string, split, limit = -1, i = 0) {
   let splitIndex = string.indexOf(split);
   if (i === limit)
     return [string];
   if (splitIndex === -1)
     return [];
-  let splittedArray = splitClassic(string.substring(splitIndex + split.length), split, limit, limit > -1 ? i+1 : -1);
+  let splittedArray = splitClassic(string.substring(splitIndex + split.length), split, limit, limit > -1 ? i + 1 : -1);
   splittedArray.splice(0, 0, string.substring(0, splitIndex));
   return splittedArray;
 }
