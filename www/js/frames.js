@@ -73,7 +73,7 @@ const Frames = {
           timeStart = event['e'];
 
     let overlayText = document.createElement('div');
-    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(Math.min(timeStart + online_data['period'], (24 * 60) - 1))}">?`;
+    overlayText.innerHTML = `What were you doing from <input id='inputStart' type="time" value="${minutesToString(timeStart)}"> to <input id='inputEnd' type="time" value="${minutesToString(Math.min(timeStart + online_data['defaultEventMinutes'], minutesInDay - 1))}">?`;
     overlay.appendChild(overlayText);
 
     function createCategoryButton(category) {
@@ -138,7 +138,7 @@ const Frames = {
     btnAutofillSleep.addEventListener('click', () => {
       alert('This will take some time...');
       let unfinishedDays = [];
-      let finishingTime = stringToMinutes("23:59")
+      let finishingTime = sminutesInDay - 1;
       for (let year of Object.keys(online_data['events']))
         for (let month of Object.keys(online_data['events'][year]))
           for (let day of Object.keys(online_data['events'][year][month])) {
@@ -181,11 +181,11 @@ const Frames = {
           'c': 'sleep'
         });
         compressDay(date['y'], date['m'], date['d']);
-        let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
-        generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
       }
+      save();
       alert('Done');
-      paintToday();
+      let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
+      generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
     });
     overlayBtns.push(btnAutofillSleep);
 

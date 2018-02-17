@@ -1,7 +1,9 @@
 const FILE_DATA = "data.json"; // file with all data
+const minutesInDay = 24 * 60;
 
 let online_data = {
-  'period': 30, // how long does one period lasts in minutes
+  'eventPrecise': 1, // how long does one period lasts in minutes
+  'defaultEventMinutes': 30,
   'categories': {
     'sleep': '#687676'
   },
@@ -194,15 +196,15 @@ function compressAll() {
 function compressDay(year, month, day) {
   if ((year in online_data['events']) && (month in online_data['events'][year]) && (day in online_data['events'][year][month])) {
     let dayMinutes = {};
-    for (let i = 0; i < 24 * 60; i++)
+    for (let i = 0; i < minutesInDay; i++)
       dayMinutes[i] = null;
     for (let event of online_data['events'][year][month][day]) {
-      let start = event['s'];
-      let duration = event['e'] - start;
+      let start = Math.max(event['s'], 0);  // 0 minutes is the minimum
+      let duration = Math.min(event['e'], minutesInDay - 1) - start; // 23:59 is the maximum time
       let category = event['c'];
 
       // Skip invalid inputs
-      if (duration < 0)
+      if (duration <= 0)
         continue;
 
       for (let i = 0; i < duration; i++)
@@ -211,7 +213,7 @@ function compressDay(year, month, day) {
 
     let newEvents = [];
     let currentEvent = null;
-    for (let i = 0; i < 24 * 60; i++) {
+    for (let i = 0; i < minutesInDay; i++) {
       let category = dayMinutes[i];
       if ((category === null) && (currentEvent === null))
         continue;
@@ -233,7 +235,7 @@ function compressDay(year, month, day) {
         }
     }
     if (currentEvent !== null) {
-      currentEvent['e'] = (24 * 60);
+      currentEvent['e'] = (minutesInDay);
       newEvents.push(currentEvent);
     }
 
@@ -267,7 +269,6 @@ function generateTable(year, month, day, daysToShow = null) {
   let container = document.querySelector('#overCanvas');
   container.innerHTML = '';
   const centerDate = new Date(year, month - 1, day);
-  const minutesInDay = 24 * 60;
   for (let i = 0; i < daysToShow; i++) {
     let dayDate = new Date(centerDate.getTime() - ((Math.floor(daysToShow / 2) - i) * 24 * 3600 * 1000));
     let dayDOM = document.createElement('span');
@@ -346,7 +347,7 @@ function generateTable(year, month, day, daysToShow = null) {
 
   // Hide new record button if the day is fully filled
   let btnNewRecord = document.querySelector('#btnNewRecord');
-  if (lastEventEnd >= (24 * 60) - 1)
+  if (lastEventEnd >= (minutesInDay) - 1)
     Frames.btnHide(btnNewRecord);
   else
     Frames.btnShow(btnNewRecord);
@@ -449,7 +450,7 @@ function generateExportTable(year, month) {
   let ctx = canvas.getContext("2d");
   ctx.font = `${fontHeight}px monotype`
   let textWidth = ctx.measureText('01').width;
-  canvas.width = textWidth + (24 * 60);
+  canvas.width = textWidth + (minutesInDay);
   // Paint background
   ctx.fillStyle = "#FFFFFF";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
