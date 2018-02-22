@@ -24,19 +24,19 @@ const Server = {
     request.send(params);
   },
 
-  pull: function(callbackSuccess, callbackError=null) {
+  pull: function(callbackSuccess, url=Server.user_data_url(), callbackError=null) {
     let request = new XMLHttpRequest();
-    request.open("GET", Server.user_data_url(), true);
+    request.open("GET", url, true);
     request.onreadystatechange = function (aEvt) {
       if (request.readyState == 4) {
          if(request.status == 200)
-          callbackSuccess(http.responseText);
+          callbackSuccess(request.responseText);
          else if (callbackError !== null)
           callbackError(request);
       }
     };
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
-    request.send(params);
+    request.send(null);
   }
 };

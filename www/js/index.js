@@ -4,6 +4,7 @@ const minutesInDay = 24 * 60;
 let online_data = {
   'eventPrecise': 1, // how long does one period lasts in minutes
   'defaultEventMinutes': 30,
+  'sleepCategory': 'sleep', // this category is used to autofill sleep
   'categories': {
     'sleep': '#687676'
   },

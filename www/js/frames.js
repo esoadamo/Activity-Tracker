@@ -3,18 +3,24 @@ const Frames = {
   /**
    * overlay_create - creates overlay DOM and returns it
    *
+   * @param {bool} animate if set to true, the comming of this overlay will be animated
+   * @param {bool} closeable if set to true, user can close this overlay by pressing the back button
    * @return {DOM}  overlay added to the body
    */
-  overlay_create: function() {
+  overlay_create: function(animate = true, closeable = true) {
     let overlay = document.createElement('div');
-    overlay.className = 'overlay overlayFadeIn';
+    overlay.className = 'overlay';
+    if (animate)
+      overlay.className += '';
 
     document.body.appendChild(overlay);
 
-    overlay.dataset.backButtonActionIndex = Math.max(0, ...Object.keys(backButtonActions)) + 1;
+    if (closeable) {
+      overlay.dataset.backButtonActionIndex = Math.max(0, ...Object.keys(backButtonActions)) + 1;
 
-    backButtonActions[overlay.dataset.backButtonActionIndex] = () => {
-      Frames.overlay_destroy(overlay);
+      backButtonActions[overlay.dataset.backButtonActionIndex] = () => {
+        Frames.overlay_destroy(overlay);
+      }
     }
 
     document.body.scrollLeft = 0;
@@ -132,13 +138,25 @@ const Frames = {
     });
     overlayBtns.push(btnSyncSetup);
 
+    let btnServerPull = document.createElement('button');
+    btnServerPull.className = 'button';
+    btnServerPull.textContent = 'Pull server data';
+    btnServerPull.addEventListener('click', () => {
+      Server.pull((data) => {
+        online_data = JSON.parse(data);
+        save();
+        paintToday();
+      });
+    });
+    overlayBtns.push(btnServerPull);
+
     let btnAutofillSleep = document.createElement('button');
     btnAutofillSleep.className = 'button';
     btnAutofillSleep.textContent = 'Autofill sleep';
     btnAutofillSleep.addEventListener('click', () => {
       alert('This will take some time...');
       let unfinishedDays = [];
-      let finishingTime = sminutesInDay - 1;
+      let finishingTime = minutesInDay - 1;
       for (let year of Object.keys(online_data['events']))
         for (let month of Object.keys(online_data['events'][year]))
           for (let day of Object.keys(online_data['events'][year][month])) {
@@ -163,7 +181,7 @@ const Frames = {
         let tommorowStartsWithSleep = false;
         if ((tommorowYear in online_data['events']) && (tommorowMonth in online_data['events'][tommorowYear]) && (tommorowDay in online_data['events'][tommorowYear][tommorowMonth]))
           for (let event of online_data['events'][tommorowYear][tommorowMonth][tommorowDay])
-            if ((event['s'] === 0) && (event['c'] === 'sleep')) {
+            if ((event['s'] === 0) && (event['c'] === online_data['sleepCategory'])) {
               tommorowStartsWithSleep = true;
               break;
             }
@@ -178,7 +196,7 @@ const Frames = {
         online_data['events'][date['y']][date['m']][date['d']].push({
           's': sleepTime,
           'e': finishingTime,
-          'c': 'sleep'
+          'c': online_data['sleepCategory']
         });
         compressDay(date['y'], date['m'], date['d']);
       }
