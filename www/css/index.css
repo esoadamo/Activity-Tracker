@@ -255,6 +255,24 @@ button {
   }
 }
 
+@keyframes rotationCircle {
+  0% {
+   transform: rotate(-90deg);
+   color: #ffffff;
+ }
+ 25% {
+   color: #008000;
+ }
+ 50% {
+   color: #ffff00;
+ }
+ 100% {
+   transform: rotate(270deg);
+   color: #ffffff;
+ }
+}
+
+
 
 input[type="text"] {
   font-size: 1.4em;

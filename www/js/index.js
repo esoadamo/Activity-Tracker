@@ -49,6 +49,7 @@ const app = {
     console.log('Received Event: ' + id);
     switch (id) {
       case 'deviceready':
+        Frames.processingHide(); // the app is loaded, hide loading bar
         load();
         paintToday();
         let btnNewRecord = document.querySelector('#btnNewRecord');
@@ -481,4 +482,5 @@ function generateExportTable(year, month) {
   ctx.stroke();
 }
 
+Frames.processingShow("The application is launching");
 app.initialize();

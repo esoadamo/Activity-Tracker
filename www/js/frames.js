@@ -50,6 +50,33 @@ const Frames = {
     delete backButtonActions[overlay.dataset.backButtonActionIndex];
   },
 
+  processingShow: (text='')=>{
+    const overlayID = 'processingOverlay';
+    let loadingBar = document.querySelector('#'+overlayID);
+    if (loadingBar !== null)
+      processingHide();
+    loadingBar = Frames.overlay_create(animate=false, closeable=false);
+    loadingBar.id = overlayID;
+
+    let rotatingCircle = document.createElement('span');
+    rotatingCircle.textContent = 'donut_large';
+    rotatingCircle.classList.add('material-icons');
+    rotatingCircle.style.fontSize = '20vh';
+    rotatingCircle.style.animation = 'rotationCircle 1s ease 0s infinite normal';
+
+    let shownText = document.createElement('span');
+    shownText.textContent = text;
+    loadingBar.appendChild(shownText);
+    loadingBar.appendChild(rotatingCircle);
+  },
+
+  processingHide: ()=>{
+    const overlayID = 'processingOverlay';
+    let loadingBar = document.querySelector('#'+overlayID);
+    if (loadingBar !== null)
+        Frames.overlay_destroy(loadingBar);
+  },
+
   /**
    * new_record - shows frame for adding new record
    *
@@ -142,11 +169,13 @@ const Frames = {
     btnServerPull.className = 'button';
     btnServerPull.textContent = 'Pull server data';
     btnServerPull.addEventListener('click', () => {
+      Frames.processingShow("Pulling data from server");
       Server.pull((data) => {
         online_data = JSON.parse(data);
         save();
         paintToday();
       });
+      Frames.processingHide();
     });
     overlayBtns.push(btnServerPull);
 
@@ -154,7 +183,7 @@ const Frames = {
     btnAutofillSleep.className = 'button';
     btnAutofillSleep.textContent = 'Autofill sleep';
     btnAutofillSleep.addEventListener('click', () => {
-      alert('This will take some time...');
+      Frames.processingShow("Autofilling sleep");
       let unfinishedDays = [];
       let finishingTime = minutesInDay - 1;
       for (let year of Object.keys(online_data['events']))
@@ -201,7 +230,7 @@ const Frames = {
         compressDay(date['y'], date['m'], date['d']);
       }
       save();
-      alert('Done');
+      Frames.processingHide();
       let dateData = shownDate.value.split('-'); // yyyy-mm-dd format
       generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
     });
