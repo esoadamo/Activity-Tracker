@@ -280,6 +280,12 @@ input[type="text"] {
   text-align: center;
 }
 
+input[type="number"] {
+  font-size: 1em;
+  width: 100%;
+  text-align: right;
+}
+
 input[type="time"] {
   font-size: 1em;
   width: auto;

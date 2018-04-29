@@ -174,8 +174,8 @@ const Frames = {
         online_data = JSON.parse(data);
         save();
         paintToday();
+        Frames.processingHide();
       });
-      Frames.processingHide();
     });
     overlayBtns.push(btnServerPull);
 
@@ -235,6 +235,13 @@ const Frames = {
       generateTable(parseInt(dateData[0]), parseInt(dateData[1]), parseInt(dateData[2]), offline_data['daysToShow']);
     });
     overlayBtns.push(btnAutofillSleep);
+
+    let spanEventPrecision = document.createElement('span');
+    spanEventPrecision.innerHTML = `Shown precision: <input id="inputPrecision" type="number" value="${online_data['eventPrecise']}" min="1" max="${minutesInDay}"> min`;
+    overlay.appendChild(spanEventPrecision);
+    document.querySelector('#inputPrecision').addEventListener('change', ()=>{
+      online_data['eventPrecise'] = parseInt(document.querySelector('#inputPrecision'));
+    });
 
     for (let btn of overlayBtns) {
       overlay.appendChild(btn);
